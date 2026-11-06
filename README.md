@@ -6,6 +6,23 @@ A Chrome extension that lets you save WhatsApp Web messages into named collectio
 
 > Independent project. Not affiliated with, endorsed by, or sponsored by WhatsApp or Meta.
 
+## Demo
+
+<p align="center">
+  <a href="store/whatsapp-bookmarks-promo.mp4"><img src="store/promo-poster.png" width="720" alt="Watch the 31-second demo video"></a><br>
+  <sub>▶ <a href="store/whatsapp-bookmarks-promo.mp4">Watch the 31-second demo</a></sub>
+</p>
+
+## Screenshots
+
+All screenshots use invented chats and show the real extension UI.
+
+| | |
+| --- | --- |
+| <img src="store/screenshots/1-bookmark-from-the-menu.png" alt="Bookmark option in the message menu"><br>**Bookmark from the message menu** | <img src="store/screenshots/2-save-to-a-collection.png" alt="Save dialog with collection and label"><br>**Save to a collection, add a label** |
+| <img src="store/screenshots/3-browse-and-open.png" alt="Bookmarks pane and viewer with a clickable link"><br>**Browse, filter and open** | <img src="store/screenshots/4-voice-notes.png" alt="Voice note player in the viewer"><br>**Play voice notes** |
+| <img src="store/screenshots/5-files-and-pdfs.png" alt="PDF open inline in the viewer"><br>**Open files and PDFs** | <img src="store/screenshots/6-dark-theme.png" alt="Dark theme with an image bookmark"><br>**Follows light and dark themes** |
+
 ## Features
 
 - **Bookmark from the native menu.** Open a message's menu (Reply, Forward, Star…) and choose **Bookmark**. It also works from WhatsApp's right-click menu, and Chrome's own context menu has **Bookmark this WhatsApp message** as a fallback.
@@ -84,6 +101,23 @@ npm run package    # builds dist/whatsapp-bookmarks-<version>.zip for the Web St
 | `tests/` | DOM regression tests |
 
 The tests cover native menus, collections, filters, saved text, images, audio, video, attaching missing media, viewer behaviour, theme changes and capture diagnostics. They run in a simulated DOM, so test real playback, downloads and layout in your signed-in WhatsApp Web session.
+
+### Store screenshots
+`promo/screens/` renders 1280×800 screenshots by running the real extension scripts in headless Chrome against a mock chat page (`mock.html`) seeded with invented bookmarks (`build-data.py`). Output goes to `store/screenshots/`.
+
+```sh
+python3 promo/screens/build-data.py                         # sample data (needs Pillow)
+node promo/screens/render-screens.mjs store/screenshots     # Node 22+ and Google Chrome
+```
+
+### Promo video
+`promo/promo.html` is a scripted, deterministic animation of the extension (open it in Chrome to watch it loop; Space pauses, arrow keys scrub). To render it to MP4 you need Node 22+, Google Chrome and an `ffmpeg`:
+
+```sh
+node promo/render.mjs /tmp/promo-frames 30 1.5      # 31 s of PNG frames at 1920x1080
+ffmpeg -framerate 30 -i /tmp/promo-frames/frame_%04d.png -c:v libx264 -crf 18 -pix_fmt yuv420p store/whatsapp-bookmarks-promo.mp4
+```
+The video is silent; add music in any editor. Refresh `store/promo-poster.png` with `ffmpeg -ss 14.2 -i store/whatsapp-bookmarks-promo.mp4 -frames:v 1 -vf scale=1280:-1 store/promo-poster.png`. It uses a generic mock UI, not WhatsApp's branding or real chats.
 
 ### Releasing
 1. Bump `version` in `manifest.json` and `package.json`, and the version string in the debug report in `content.js` (the regression test checks it).

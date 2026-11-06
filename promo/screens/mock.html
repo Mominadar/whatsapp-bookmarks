@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mock chat app (for screenshots)</title>
+<style>
+  :root { --bg:#fff; --panel:#fff; --line:#e9edef; --ink:#111b21; --muted:#667781; --hover:#f5f6f6; --wall:#efeae2; --in:#fff; --out:#d9fdd3; --rail:#f7f8f8; }
+  html.dark { --bg:#111b21; --panel:#111b21; --line:#222d34; --ink:#e9edef; --muted:#8696a0; --hover:#202c33; --wall:#0b141a; --in:#202c33; --out:#005c4b; --rail:#202c33; }
+  * { box-sizing:border-box; margin:0; }
+  html,body { height:100%; background:var(--bg); color:var(--ink); font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  #app { display:flex; height:100vh; width:100vw; }
+  nav { width:64px; flex:none; background:var(--rail); border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:center; gap:6px; padding-top:14px; }
+  nav button { width:44px; height:44px; border:0; border-radius:50%; background:transparent; color:var(--muted); cursor:pointer; display:grid; place-items:center; font-size:0; }
+  nav button svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  nav button.on { background:#e0e6e8; color:var(--ink); } html.dark nav button.on { background:#2a3942; }
+  .list-pane { width:400px; flex:none; border-right:1px solid var(--line); background:var(--panel); }
+  #side { height:100%; display:flex; flex-direction:column; }
+  #side h2 { padding:16px 18px 8px; font-size:22px; font-weight:700; }
+  .search { margin:6px 14px 8px; padding:9px 14px; border-radius:10px; background:var(--hover); color:var(--muted); }
+  .chat-row { display:flex; gap:12px; padding:11px 18px; align-items:center; } .chat-row:hover { background:var(--hover); }
+  .chat-row .av { width:46px; height:46px; border-radius:50%; flex:none; display:grid; place-items:center; color:#fff; font-weight:700; }
+  .chat-row b { display:block; } .chat-row span { color:var(--muted); font-size:13px; }
+  main { flex:1; min-width:0; display:flex; flex-direction:column; background:var(--wall); background-image:radial-gradient(rgba(128,128,128,.12) 1.2px,transparent 1.2px); background-size:22px 22px; position:relative; }
+  main header { height:60px; flex:none; display:flex; align-items:center; gap:12px; padding:0 18px; background:var(--rail); border-bottom:1px solid var(--line); font-weight:600; }
+  main header .av { width:40px; height:40px; border-radius:50%; background:#6c63ff; color:#fff; display:grid; place-items:center; font-weight:700; }
+  .messages { flex:1; padding:24px 6% 12px; display:flex; flex-direction:column; gap:10px; overflow:hidden; }
+  .row { display:flex; } .row.out { justify-content:flex-end; }
+  .message-in,.message-out { position:relative; max-width:62%; padding:8px 12px 4px; border-radius:0 10px 10px 10px; background:var(--in); box-shadow:0 1px 1px #0002; font-size:15px; line-height:1.45; }
+  .message-out { background:var(--out); border-radius:10px 0 10px 10px; }
+  .message-in small,.message-out small { display:block; text-align:right; color:var(--muted); font-size:11px; }
+  .composer { height:62px; flex:none; background:var(--rail); border-top:1px solid var(--line); display:flex; align-items:center; padding:0 18px; }
+  .composer div { flex:1; padding:10px 16px; border-radius:20px; background:var(--panel); color:var(--muted); }
+  /* the native message menu the extension hooks into */
+  .wa-menu { position:absolute; z-index:20; width:220px; padding:8px 0; border-radius:12px; background:var(--panel); box-shadow:0 8px 28px #0004; }
+  .wa-menu ul { list-style:none; padding:0; }
+  .wa-menu li { cursor:pointer; } .wa-menu li:hover { background:var(--hover); }
+  .wa-menu li > div { display:flex; align-items:center; gap:14px; padding:10px 22px; font-size:15.5px; color:var(--ink); }
+  .wa-menu [data-icon] svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; }
+</style>
+</head>
+<body>
+<div id="app">
+  <nav>
+    <button aria-label="Chats" class="on" title="Chats"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4Z"/></svg></button>
+    <button aria-label="Status" title="Status"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/></svg></button>
+    <button aria-label="Channels" title="Channels"><svg viewBox="0 0 24 24"><path d="M4 10v4l12 5V5Z"/></svg></button>
+    <button aria-label="Communities" title="Communities"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5M15 15c3 0 6 1 6 4"/></svg></button>
+  </nav>
+  <section class="list-pane">
+    <div id="side">
+      <h2>Chats</h2><div class="search">Search or start a new chat</div>
+      <div class="chat-row"><div class="av" style="background:#6c63ff">M</div><div><b>Mum</b><span>Layer noodles, ricotta, spinach…</span></div></div>
+      <div class="chat-row"><div class="av" style="background:#e5524f">S</div><div><b>Sara</b><span>🎤 Voice message</span></div></div>
+      <div class="chat-row"><div class="av" style="background:#0b8a69">T</div><div><b>Team Alpha</b><span>Q3-report.pdf</span></div></div>
+      <div class="chat-row"><div class="av" style="background:#f59e0b">D</div><div><b>Dad</b><span>Hotel booking is confirmed</span></div></div>
+      <div class="chat-row"><div class="av" style="background:#3b82f6">P</div><div><b>Priya</b><span>📷 Photo</span></div></div>
+      <div class="chat-row"><div class="av" style="background:#8b5cf6">A</div><div><b>Alex</b><span>Idea: a monthly photo walk</span></div></div>
+    </div>
+  </section>
+  <main id="main">
+    <header><div class="av">M</div><span title="Mum">Mum</span></header>
+    <div class="messages">
+      <div class="row" data-id="false_1001@c.us_M1"><div class="message-in" data-id="false_1001@c.us_M1"><div data-pre-plain-text="[10:41, 11/5/2026] Mum: "><span class="selectable-text">Can you send me grandma's lasagna recipe?</span></div><small>10:41</small></div></div>
+      <div class="row out" data-id="true_1001@c.us_M2"><div class="message-out" data-id="true_1001@c.us_M2"><div data-pre-plain-text="[10:41, 11/5/2026] You: "><span class="selectable-text">Sure, one second!</span></div><small>10:41</small></div></div>
+      <div class="row" data-id="false_1001@c.us_M3"><div class="message-in" data-id="false_1001@c.us_M3" id="target"><div data-pre-plain-text="[10:42, 11/5/2026] Mum: "><span class="selectable-text">Layer noodles, ricotta, spinach and lots of sauce. Bake at 180° for 45 minutes. 🍝</span></div><small>10:42</small></div></div>
+      <div class="row out" data-id="true_1001@c.us_M4"><div class="message-out" data-id="true_1001@c.us_M4"><div data-pre-plain-text="[10:43, 11/5/2026] You: "><span class="selectable-text">Perfect, making it this weekend 😋</span></div><small>10:43</small></div></div>
+    </div>
+    <div class="composer"><div>Type a message</div></div>
+  </main>
+</div>
+
+<script>
+  // ---- Harness only (not part of the extension): stand in for Chrome's extension APIs with in-memory storage.
+  const params = new URLSearchParams(location.search);
+  if (params.get('theme') === 'dark') document.documentElement.classList.add('dark');
+  window.__shadows = new Map();                                  // expose the (normally closed) shadow roots to the screenshot driver
+  const attach = Element.prototype.attachShadow;
+  Element.prototype.attachShadow = function (o) { const r = attach.call(this, { ...o, mode: 'open' }); window.__shadows.set(this.id, r); return r; };
+  window.__store = [];
+  window.__listeners = [];
+  window.chrome = { runtime: {
+    onMessage: { addListener: fn => window.__listeners.push(fn) },
+    async sendMessage(m) {
+      if (m.action === 'save') { const i = window.__store.findIndex(x => x.id === m.item.id); if (i >= 0) window.__store[i] = m.item; else window.__store.push(m.item); return { ok: true }; }
+      if (m.action === 'delete') { window.__store = window.__store.filter(x => x.id !== m.id); return { ok: true }; }
+      return { ok: true, items: window.__store.map(x => structuredClone(x)) };
+    }
+  } };
+</script>
+<script src="sample-data.js"></script>
+<script>window.__store = structuredClone(window.__SAMPLE_ITEMS);</script>
+<script src="../../navigation.js"></script>
+<script src="../../media.js"></script>
+<script src="../../content.js"></script>
+<link rel="stylesheet" href="../../content.css">
+</body>
+</html>

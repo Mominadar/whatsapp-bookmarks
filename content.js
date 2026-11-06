@@ -38,9 +38,9 @@
       .message-preview:hover .message-bubble { box-shadow:0 0 0 1px var(--wab-border),0 1px 2px #0002; }
       .message-preview[aria-pressed="true"] .message-bubble { box-shadow:0 0 0 1px var(--wab-accent); }
       .bubble-sender { display:block; color:var(--wab-accent); font-size:12px; font-weight:600; margin-bottom:4px; }
-      .items .bubble-body { display:flex; flex-direction:column; justify-content:center; min-height:62px; max-height:62px; overflow:hidden; }
+      .items .bubble-body { display:flex; flex-direction:column; justify-content:center; min-height:54px; max-height:54px; overflow:hidden; }
       .items .text { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin:0; line-height:1.4; }
-      .items img { height:62px; max-height:62px; width:auto; max-width:100%; object-fit:cover; margin:0; }
+      .items img { height:54px; max-height:54px; width:auto; max-width:100%; object-fit:cover; margin:0; }
       .item-note { display:block; margin:0 2px 6px; color:var(--wab-accent); font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       .media-chip { display:flex; align-items:center; gap:8px; color:var(--wab-text); font-size:13px; } .media-chip .glyph { font-size:20px; }
       .text { display:block; white-space:pre-wrap; overflow-wrap:anywhere; margin:0 0 4px; }
@@ -265,7 +265,7 @@
     const query = $('.search').value.trim().toLocaleLowerCase();
     const matchesType = item => typeFilter === 'all' || itemTypes(item).has(typeFilter);
     const allNames = [...new Set(items.map(item => item.collection))].sort((a,b) => a.localeCompare(b));
-    const names = allNames.filter(name => name.toLocaleLowerCase().includes(query));
+    const names = allNames.filter(name => name.toLocaleLowerCase().includes(query) && (name === filter || items.some(item => item.collection === name && matchesType(item))));
     if (filter !== null && !allNames.includes(filter)) filter = null;
     for (const name of [null, ...names]) {
       const count = items.filter(item => (name === null ? names.includes(item.collection) : item.collection === name) && matchesType(item)).length;
@@ -303,7 +303,8 @@
       const chatAvatar = el('span', 'chat-avatar', Array.from(chatTitle)[0]?.toLocaleUpperCase() || '#'); chatAvatar.setAttribute('aria-hidden', 'true');
       heading.append(chatAvatar, headingText, el('span', 'open-arrow', '›'));
       const bubble = el('span', 'message-bubble');
-      if (presentation.sender) bubble.append(el('span', 'bubble-sender', presentation.sender));
+      // A 1:1 chat repeats the sender's name in the heading, so only show it when it adds information (groups, "You").
+      if (presentation.sender && presentation.sender !== chatTitle) bubble.append(el('span', 'bubble-sender', presentation.sender));
       if (item.note) preview.append(heading, el('span', 'item-note', item.note), bubble); else preview.append(heading, bubble);
       // Every list entry has the same compact shape; the full message, player or image opens in the right-hand pane.
       const body = el('span', 'bubble-body');
@@ -394,6 +395,7 @@
     .doc-icon { font-size:28px; } .doc-info { flex:1; min-width:0; } .doc-info strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; user-select:text; } .doc-info span { font-size:12px; }
     .doc-actions { display:flex; gap:6px; flex-shrink:0; } .doc-action { padding:5px 10px; border-radius:14px; background:var(--wab-hover); color:var(--wab-accent); font-size:12px; text-decoration:none; }
     .doc-frame { display:block; width:100%; height:70vh; margin:8px 0; border:0; border-radius:6px; background:#fff; }
+    .saved-message.has-audio { width:min(460px,75%); } .saved-message.has-audio .message-bubble { width:100%; }
     .saved-message.has-video { width:min(640px,75%); }
     .saved-message.has-video .message-bubble { width:100%; }
     .saved-message video { display:block; width:100%; height:auto; min-height:200px; max-height:65vh; margin:8px 0; border-radius:6px; background:#000; object-fit:contain; }
@@ -555,6 +557,7 @@
               const download=el('a','',`Download saved ${media.kind}`);download.href=audio.src;download.download='bookmarked-'+media.kind;error.append(document.createTextNode(' '),download);audio.after(error);
             }
           };
+          if (media.kind==='audio') message.classList.add('has-audio');
           if (media.kind==='video') {message.classList.add('has-video');audio.setAttribute('playsinline','');audio.preload='auto';}
           bubble.append(audio);usable++;
         } catch(error) {bubble.append(el('p','viewer-notice audio-error',error.message));}
@@ -804,7 +807,7 @@
   $('.copy-debug').onclick=async()=>{
     const id=pending?.messageId;
     const report={
-      extensionVersion:'1.6.0',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
+      extensionVersion:'1.6.1',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
       savedReference:{hasMessageId:!!id,hasChat:!!pending?.chat,hasChatId:!!pending?.chatId,hasMetadata:!!pending?.meta,hasText:!!pending?.text,mediaKind:pending?.mediaKind || '',mediaCount:pending?.media.length || 0},
       page:{hasMain:!!document.querySelector('#main'),messageContainers:document.querySelectorAll(messageSelector).length,identifiedElements:document.querySelectorAll('[data-id]').length,metadataElements:document.querySelectorAll('[data-pre-plain-text]').length,matchingMessageIds:id?[...document.querySelectorAll('[data-id]')].filter(node=>node.getAttribute('data-id')===id).length:0},
       originalSource:sourceDebug,currentSource:describeSource(pendingSource),lastMenuSource:describeSource(menuMessage),lastHoveredSource:describeSource(hoveredMessage),

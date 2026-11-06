@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WhatsApp Bookmarks — promo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { --teal:#0b8a69; --mint:#22c997; --ink:#111b21; --muted:#667781; --line:#e9edef; --panel:#ffffff; --list:#f0f2f5; --accent:#008069; --soft:#d9fdd3; }
+  * { box-sizing:border-box; margin:0; }
+  html,body { width:100%; height:100%; background:#0a0f12; overflow:hidden; font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; color:var(--ink); }
+  #fit { position:absolute; left:50%; top:50%; width:1280px; height:720px; transform-origin:center; }
+  .stage { position:relative; width:1280px; height:720px; overflow:hidden; background:#0a0f12; }
+  .scene { position:absolute; inset:0; opacity:0; overflow:hidden; }
+  .bg-teal { background:linear-gradient(135deg,#0b8a69 0%,#16b283 55%,#22c997 100%); color:#fff; }
+  .bg-soft { background:linear-gradient(160deg,#e8f7f1 0%,#f6faf8 60%,#ffffff 100%); }
+  .abs { position:absolute; }
+  .center { display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; }
+  h1 { font-size:68px; line-height:1.08; letter-spacing:-1.6px; font-weight:800; }
+  h2 { font-size:44px; letter-spacing:-1px; font-weight:800; }
+  .caption { position:absolute; left:50%; bottom:34px; transform:translateX(-50%); padding:12px 26px; border-radius:30px; background:#0b1b16ee; color:#fff; font-size:25px; font-weight:600; white-space:nowrap; opacity:0; }
+  .badge { display:inline-block; padding:6px 16px; border-radius:20px; background:#ffffff26; font-weight:700; letter-spacing:.5px; font-size:18px; }
+
+  /* app mock */
+  .app { position:absolute; left:90px; top:46px; width:1100px; height:580px; border-radius:18px; background:var(--panel); box-shadow:0 30px 80px #0a3a2d40,0 0 0 1px #0001; overflow:hidden; }
+  .app .topbar { height:46px; background:#f7f8f8; border-bottom:1px solid var(--line); display:flex; align-items:center; padding:0 16px; gap:8px; }
+  .dot { width:12px; height:12px; border-radius:50%; background:#ff5f57; } .dot:nth-child(2){background:#febc2e} .dot:nth-child(3){background:#28c840}
+  .url { margin-left:18px; padding:4px 16px; border-radius:12px; background:#e9edef; color:#667781; font-size:13px; }
+  .rail { position:absolute; left:0; top:46px; bottom:0; width:64px; background:#f7f8f8; border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:center; gap:14px; padding-top:16px; }
+  .rail i { width:34px; height:34px; border-radius:50%; background:#e3e7e8; display:block; }
+  .rail .bm { background:var(--accent); display:grid; place-items:center; } .rail .bm svg { width:18px; height:18px; fill:none; stroke:#fff; stroke-width:2.2; }
+  .chat { position:absolute; left:64px; right:0; top:46px; bottom:0; background:#efeae2; background-image:radial-gradient(#e2dccf 1.2px,transparent 1.2px); background-size:22px 22px; }
+  .chat-head { height:58px; background:#f7f8f8; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; padding:0 20px; font-weight:700; }
+  .avatar { width:36px; height:36px; border-radius:50%; background:#cfe9df; color:var(--accent); display:grid; place-items:center; font-weight:800; flex:none; }
+  .bubble { position:absolute; max-width:520px; padding:10px 14px 6px; border-radius:0 12px 12px 12px; background:#fff; box-shadow:0 1px 1px #0002; font-size:19px; line-height:1.45; }
+  .bubble small { display:block; text-align:right; color:var(--muted); font-size:12px; margin-top:2px; }
+  .chev { position:absolute; right:6px; top:6px; width:24px; height:24px; border-radius:50%; background:#ffffffe0; display:grid; place-items:center; color:#667781; font-size:14px; opacity:0; }
+  .menu { position:absolute; width:210px; padding:8px 0; border-radius:12px; background:#fff; box-shadow:0 8px 30px #0003; opacity:0; font-size:17px; }
+  .menu div { padding:10px 20px; display:flex; align-items:center; gap:10px; } .menu .hot { background:#e7f6f1; color:var(--accent); font-weight:700; }
+  .menu svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.2; }
+  .scrim { position:absolute; inset:0; background:#0b141a66; opacity:0; }
+  .dialog { position:absolute; left:50%; top:50%; width:440px; margin:-150px 0 0 -220px; padding:26px; border-radius:18px; background:#fff; box-shadow:0 20px 70px #0004; opacity:0; }
+  .dialog h3 { font-size:24px; margin-bottom:14px; } .dialog .pv { padding:12px; border-radius:10px; background:#f0f2f5; font-size:16px; margin-bottom:16px; }
+  .dialog label { font-weight:700; font-size:14px; display:block; margin-bottom:6px; color:#3b4a54; }
+  .field { padding:12px 14px; border-radius:10px; background:#f0f2f5; font-size:18px; min-height:46px; display:flex; align-items:center; }
+  .caret { display:inline-block; width:2px; height:20px; background:#111b21; margin-left:1px; }
+  .btn { display:inline-block; padding:11px 22px; border-radius:22px; font-weight:700; font-size:16px; } .btn.p { background:var(--accent); color:#fff; } .btn.g { background:#f0f2f5; color:#3b4a54; }
+  .toast { position:absolute; left:50%; bottom:40px; transform:translateX(-50%); padding:12px 22px; border-radius:12px; background:#233138; color:#fff; font-weight:600; opacity:0; }
+
+  /* bookmarks pane */
+  .pane { position:absolute; left:64px; top:46px; bottom:0; width:430px; background:var(--list); border-right:1px solid var(--line); }
+  .pane header { background:#fff; padding:16px 16px 10px; box-shadow:0 1px 0 var(--line); }
+  .pane h4 { font-size:22px; font-weight:800; display:flex; align-items:center; gap:10px; margin-bottom:10px; } .pane h4 em { margin-left:auto; font-style:normal; font-size:12px; font-weight:700; padding:2px 10px; border-radius:12px; background:#d9fdd3; color:var(--accent); }
+  .searchbox { padding:9px 12px 9px 34px; border-radius:10px; background:#f0f2f5; color:#8696a0; font-size:14px; position:relative; }
+  .searchbox:before { content:""; position:absolute; left:12px; top:10px; width:10px; height:10px; border:2px solid #8a98a0; border-radius:50%; }
+  .lbl { padding:8px 16px 4px; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#667781; }
+  .chips { display:flex; flex-wrap:wrap; gap:5px; padding:0 16px 6px; }
+  .chip { padding:3px 11px; border-radius:14px; background:#e9edef; color:#667781; font-size:12.5px; line-height:18px; }
+  .chip.on { background:var(--accent); color:#fff; font-weight:700; }
+  .cards { position:absolute; left:0; right:0; top:232px; bottom:0; padding:6px 14px; overflow:hidden; }
+  .card { margin-bottom:9px; padding:11px 12px 9px; border:1px solid var(--line); border-radius:14px; background:#fff; box-shadow:0 1px 2px #0000000d; }
+  .card .hd { display:flex; align-items:center; gap:10px; margin-bottom:7px; } .card .hd b { font-size:14px; display:block; line-height:1.2; } .card .hd small { font-size:11px; color:#667781; }
+  .card .av { width:30px; height:30px; border-radius:50%; background:#d9fdd3; color:var(--accent); display:grid; place-items:center; font-weight:800; font-size:13px; }
+  .card .bb { padding:8px 10px; border-radius:10px; background:var(--list); font-size:14px; line-height:1.35; min-height:46px; display:flex; align-items:center; }
+  .card .tl { display:flex; gap:6px; margin-top:7px; } .card .tl span { padding:1px 9px; border-radius:10px; font-size:11px; background:#e9edef; color:#667781; } .card .tl span.t { background:#d9fdd3; color:var(--accent); font-weight:700; }
+  .viewer-empty { position:absolute; left:494px; right:0; top:46px; bottom:0; background:#efeae2; background-image:radial-gradient(#e2dccf 1.2px,transparent 1.2px); background-size:22px 22px; }
+
+  /* viewer content */
+  .vbubble { position:absolute; left:60px; top:90px; width:520px; padding:14px 16px 8px; border-radius:0 12px 12px 12px; background:#fff; box-shadow:0 1px 2px #0003; }
+  .wave { display:flex; align-items:center; gap:3px; height:44px; flex:1; } .wave s { display:block; width:4px; border-radius:2px; background:#b7c3c9; }
+  .play { width:46px; height:46px; border-radius:50%; background:var(--accent); display:grid; place-items:center; flex:none; } .play:after { content:""; border-left:14px solid #fff; border-top:9px solid transparent; border-bottom:9px solid transparent; margin-left:4px; }
+  .doc { display:flex; align-items:center; gap:14px; padding:14px; border-radius:12px; background:#f0f2f5; }
+  .doc .ic { width:52px; height:60px; border-radius:6px; background:#e5524f; color:#fff; font-weight:800; display:grid; place-items:center; font-size:15px; }
+  .doc .act { padding:6px 14px; border-radius:16px; background:#e0f3ec; color:var(--accent); font-weight:700; font-size:14px; }
+  .sel { background:#bfe6d8; border-radius:3px; } .lnk { color:#0a7cff; text-decoration:underline; }
+  .cursor { position:absolute; left:0; top:0; width:30px; height:30px; z-index:50; opacity:0; filter:drop-shadow(0 2px 3px #0005); }
+  .ring { position:absolute; width:46px; height:46px; margin:-23px 0 0 -23px; border-radius:50%; border:4px solid #00806988; opacity:0; z-index:49; }
+  .lock { width:150px; height:150px; border-radius:42px; background:#ffffff26; display:grid; place-items:center; margin-bottom:26px; } .lock svg { width:84px; height:84px; fill:none; stroke:#fff; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+  .pt { display:flex; align-items:center; gap:14px; font-size:34px; font-weight:700; margin:10px 0; opacity:0; } .pt i { width:38px; height:38px; border-radius:50%; background:#fff; color:var(--teal); display:grid; place-items:center; font-style:normal; font-size:22px; }
+  .tag { margin-top:18px; font-size:30px; font-weight:600; opacity:.95; } .fine { position:absolute; bottom:22px; left:0; right:0; text-align:center; font-size:15px; opacity:.75; }
+  .cta { display:inline-block; margin-top:26px; padding:16px 38px; border-radius:40px; background:#fff; color:var(--teal); font-size:26px; font-weight:800; box-shadow:0 10px 30px #0a3a2d55; }
+  .float { position:absolute; padding:12px 18px; border-radius:14px; background:#fff; color:var(--ink); font-size:22px; font-weight:600; box-shadow:0 10px 30px #0a3a2d40; opacity:0; }
+</style>
+</head>
+<body>
+<div id="fit"><div class="stage" id="stage">
+
+  <!-- 1 · Hook -->
+  <section class="scene bg-teal center" id="s1">
+    <div class="float" id="f1" style="left:150px;top:150px;transform:rotate(-6deg)">📄 invoice_final_v3.pdf</div>
+    <div class="float" id="f2" style="left:820px;top:130px;transform:rotate(5deg)">🎤 Voice note · 0:42</div>
+    <div class="float" id="f3" style="left:110px;top:470px;transform:rotate(4deg)">🔗 the-link-you-needed.com</div>
+    <div class="float" id="f4" style="left:850px;top:480px;transform:rotate(-5deg)">“The address is…” </div>
+    <div class="abs center" style="inset:0">
+      <div class="badge" id="h0" style="opacity:0">NEW FOR WHATSAPP WEB</div>
+      <h1 id="h1" style="margin-top:22px;opacity:0">Lost an important<br>WhatsApp message?</h1>
+    </div>
+  </section>
+
+  <!-- 2 · Save -->
+  <section class="scene bg-soft" id="s2">
+    <div class="app">
+      <div class="topbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="url">web.whatsapp.com</span></div>
+      <div class="rail"><i></i><i></i><i></i><i class="bm"><svg viewBox="0 0 24 24"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4Z" stroke-linejoin="round"/></svg></i></div>
+      <div class="chat">
+        <div class="chat-head"><div class="avatar">M</div>Mum</div>
+        <div class="bubble" style="left:40px;top:90px"><span>Can you send me grandma's lasagna recipe?</span><small>10:41</small></div>
+        <div class="bubble" id="b2" style="left:40px;top:196px;width:470px"><span>Layer noodles, ricotta, spinach and lots of sauce. Bake at 180° for 45 minutes. 🍝</span><div class="chev" id="chev">⌄</div><small>10:42</small></div>
+        <div class="menu" id="menu" style="left:480px;top:222px">
+          <div>Reply</div><div>Forward</div><div>Star</div>
+          <div class="hot" id="mbm"><svg viewBox="0 0 24 24"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4Z" stroke-linejoin="round"/></svg>Bookmark</div>
+        </div>
+      </div>
+      <div class="scrim" id="scrim"></div>
+      <div class="dialog" id="dlg">
+        <h3>Bookmark message</h3>
+        <div class="pv">Layer noodles, ricotta, spinach and lots of sauce…</div>
+        <label>Collection</label>
+        <div class="field"><span id="typed"></span><span class="caret" id="caret"></span></div>
+        <div style="margin-top:18px;text-align:right"><span class="btn g">Cancel</span> <span class="btn p" id="save">Save bookmark</span></div>
+      </div>
+      <div class="toast" id="toast">Bookmark saved</div>
+    </div>
+    <div class="ring" id="ring2"></div><svg class="cursor" id="cur2" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L9 19z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <div class="caption" id="c2">Save any message in two clicks</div>
+  </section>
+
+  <!-- 3 · Browse -->
+  <section class="scene bg-soft" id="s3">
+    <div class="app">
+      <div class="topbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="url">web.whatsapp.com</span></div>
+      <div class="rail"><i></i><i></i><i></i><i class="bm"><svg viewBox="0 0 24 24"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4Z" stroke-linejoin="round"/></svg></i></div>
+      <div class="pane">
+        <header><h4>Bookmarks <em>5</em></h4><div class="searchbox">Filter collections</div></header>
+        <div class="lbl">Collections</div>
+        <div class="chips"><span class="chip on">All · 5</span><span class="chip">Recipes · 2</span><span class="chip">Work · 2</span><span class="chip">Travel · 1</span></div>
+        <div class="lbl" style="padding-top:2px">Type</div>
+        <div class="chips" id="types"><span class="chip on" data-k="all">All types</span><span class="chip" data-k="text">Text</span><span class="chip" data-k="audio">Audio</span><span class="chip" data-k="video">Video</span><span class="chip" data-k="doc">Files</span><span class="chip" data-k="link">Links</span><span class="chip" data-k="img">Images</span></div>
+        <div class="cards">
+          <div class="card" data-k="text"><div class="hd"><div class="av">M</div><div><b>Mum</b><small>Today</small></div></div><div class="bb">Layer noodles, ricotta, spinach and lots of sauce…</div><div class="tl"><span>Recipes</span><span class="t">Text</span></div></div>
+          <div class="card" data-k="audio"><div class="hd"><div class="av">S</div><div><b>Sara</b><small>Yesterday</small></div></div><div class="bb">🎤 Voice message</div><div class="tl"><span>Work</span><span class="t">Voice</span></div></div>
+          <div class="card" data-k="doc"><div class="hd"><div class="av">T</div><div><b>Team Alpha</b><small>Mon</small></div></div><div class="bb">📄 Q3-report.pdf</div><div class="tl"><span>Work</span><span class="t">File</span></div></div>
+          <div class="card" data-k="link"><div class="hd"><div class="av">D</div><div><b>Dad</b><small>Sun</small></div></div><div class="bb">Hotel booking: https://stay.example/booking</div><div class="tl"><span>Travel</span><span class="t">Link</span></div></div>
+        </div>
+      </div>
+      <div class="viewer-empty"><div style="position:absolute;inset:0;display:grid;place-items:center;color:#8696a0;font-size:20px;font-weight:600">Click a bookmark to view it here</div></div>
+    </div>
+    <div class="ring" id="ring3"></div><svg class="cursor" id="cur3" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L9 19z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <div class="caption" id="c3">Everything organised in collections</div>
+  </section>
+
+  <!-- 4 · Open -->
+  <section class="scene bg-soft" id="s4">
+    <div class="app">
+      <div class="topbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="url">web.whatsapp.com</span></div>
+      <div class="rail"><i></i><i></i><i></i><i class="bm"><svg viewBox="0 0 24 24"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4Z" stroke-linejoin="round"/></svg></i></div>
+      <div class="viewer-empty" style="left:64px">
+        <div class="chat-head" style="position:absolute;left:0;right:0;top:0"><div class="avatar">S</div>Sara <span style="font-weight:500;color:#667781;font-size:14px;margin-left:8px">Bookmarked message · Work</span></div>
+        <div class="vbubble" id="v1"><div style="display:flex;align-items:center;gap:14px"><div class="play"></div><div class="wave" id="wave"></div><span style="font-size:14px;color:#667781" id="time">0:00</span></div><small style="display:block;text-align:right;color:#667781;font-size:12px;margin-top:4px">Voice message</small></div>
+        <div class="vbubble" id="v2" style="top:90px"><div class="doc"><div class="ic">PDF</div><div style="flex:1"><b style="font-size:18px">Q3-report.pdf</b><div style="color:#667781;font-size:13px">PDF · 1.2 MB</div></div><span class="act">Open</span><span class="act">Download</span></div><div style="height:150px;margin-top:12px;border-radius:8px;background:linear-gradient(#fff,#f4f4f4);border:1px solid #e3e3e3;padding:16px"><div style="height:12px;width:50%;background:#dde2e5;border-radius:6px;margin-bottom:10px"></div><div style="height:8px;background:#eceff1;border-radius:4px;margin-bottom:7px"></div><div style="height:8px;background:#eceff1;border-radius:4px;margin-bottom:7px;width:88%"></div><div style="height:8px;background:#eceff1;border-radius:4px;margin-bottom:7px;width:94%"></div><div style="height:8px;background:#eceff1;border-radius:4px;width:60%"></div></div></div>
+        <div class="vbubble" id="v3" style="top:90px;width:560px"><div style="font-size:21px;line-height:1.5">Hotel booking is confirmed: <span class="lnk" id="lnk">https://stay.example/booking</span>. <span id="selt">Check-in is at 3&nbsp;pm, room 204.</span></div><small style="display:block;text-align:right;color:#667781;font-size:12px;margin-top:6px">Bookmarked · Travel</small></div>
+      </div>
+    </div>
+    <div class="ring" id="ring4"></div><svg class="cursor" id="cur4" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L9 19z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <div class="caption" id="c4a">Play voice notes</div><div class="caption" id="c4b">Open files and PDFs</div><div class="caption" id="c4c">Select text, click links</div>
+  </section>
+
+  <!-- 5 · Privacy -->
+  <section class="scene bg-teal center" id="s5">
+    <div class="lock" id="lock"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2"/></svg></div>
+    <h2 id="p0" style="opacity:0">Private by design</h2>
+    <div style="margin-top:22px">
+      <div class="pt" id="p1"><i>✓</i>Stored only on your device</div>
+      <div class="pt" id="p2"><i>✓</i>No account. No servers.</div>
+      <div class="pt" id="p3"><i>✓</i>No tracking, ever</div>
+    </div>
+  </section>
+
+  <!-- 6 · End -->
+  <section class="scene bg-teal center" id="s6">
+    <svg id="logo" width="170" height="170" viewBox="0 0 128 128" style="opacity:0"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e6fbf3"/></linearGradient></defs><rect x="8" y="8" width="112" height="100" rx="28" fill="url(#g)"/><path d="M22 100 L16 123 L46 106 Z" fill="#e6fbf3" stroke="#e6fbf3" stroke-width="4" stroke-linejoin="round"/><path d="M46 28h36a6 6 0 0 1 6 6v58L64 76 40 92V34a6 6 0 0 1 6-6Z" fill="#0b8a69" stroke="#0b8a69" stroke-width="2" stroke-linejoin="round"/></svg>
+    <h1 id="e1" style="margin-top:20px;opacity:0;font-size:64px">WhatsApp Bookmarks</h1>
+    <div class="tag" id="e2" style="opacity:0">Save the messages that matter.</div>
+    <div class="cta" id="e3" style="opacity:0">Add to Chrome — it’s free</div>
+    <div class="fine">Independent project. Not affiliated with, endorsed by, or sponsored by WhatsApp or Meta.</div>
+  </section>
+
+</div></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const anims = [], ticks = [];
+  const DUR = 31;
+  // Deterministic timeline: every animation is paused and driven by setTime(t) so frames can be rendered exactly.
+  function A(el, start, dur, frames, easing = 'cubic-bezier(.2,.8,.2,1)', fill = 'both') {
+    const a = el.animate(frames, { duration: dur * 1000, fill, easing }); a.pause(); anims.push({ a, start }); return a;
+  }
+  // Exit / change-over animations: 'forwards' so they have no effect before their own start time.
+  const X = (el, start, dur, frames, easing) => A(el, start, dur, frames, easing, 'forwards');
+  const out = (el, s, d = .3) => X(el, s, d, [{ opacity: 1 }, { opacity: 0 }]);
+  const fade = (el, s, d = .45) => A(el, s, d, [{ opacity: 0 }, { opacity: 1 }]);
+    const rise = (el, s, d = .6, y = 30) => A(el, s, d, [{ opacity: 0, transform: `translateY(${y}px)` }, { opacity: 1, transform: 'translateY(0)' }]);
+  const pop = (el, s, d = .5) => A(el, s, d, [{ opacity: 0, transform: 'scale(.86)' }, { opacity: 1, transform: 'scale(1)' }], 'cubic-bezier(.2,1.3,.4,1)');
+  // Cross-dissolve: each scene fades in over the previous one (which stays opaque underneath); only the last scene fades out.
+  function scene(el, s, e, last) {
+    const f = .4;
+    A(el, s - f, f, [{ opacity: 0 }, { opacity: 1 }], 'ease-in-out');
+    // Once the next scene fully covers this one, drop it so nothing bleeds through; the last scene simply holds.
+    if (!last) X(el, e, .01, [{ opacity: 1 }, { opacity: 0 }]);
+  }
+  const stageEl = $('stage');
+  // Centre of an element in stage coordinates (1280x720), measured from the real layout.
+  function P(el) {
+    const r = el.getBoundingClientRect(), b = stageEl.getBoundingClientRect(), k = b.width / 1280;
+    return [(r.left + r.width / 2 - b.left) / k, (r.top + r.height / 2 - b.top) / k];
+  }
+  // pts: [[seconds-from-s, [x,y]], ...]; the arrow tip lands exactly on [x,y].
+  function cursor(cur, s, pts) {
+    const total = pts[pts.length - 1][0];
+    A(cur, s, total, [{ opacity: 0, transform: `translate(${pts[0][1][0] - 5}px,${pts[0][1][1] - 3}px)`, offset: 0 },
+      ...pts.map(([t, [x, y]], i) => ({ opacity: 1, transform: `translate(${x - 5}px,${y - 3}px)`, offset: i === 0 ? .001 : t / total }))], 'ease-in-out');
+  }
+  // Each click gets its own ripple element so every click draws where it happened.
+  function click(template, [x, y], t) { const ring = template.cloneNode(); ring.removeAttribute('id'); ring.style.left = x + 'px'; ring.style.top = y + 'px'; template.parentNode.append(ring); X(ring, t, .5, [{ opacity: .9, transform: 'scale(.3)' }, { opacity: 0, transform: 'scale(1.5)' }], 'ease-out'); }
+
+  const T = { chev: P($('chev')), mbm: P($('mbm')), save: P($('save')), audio: P(document.querySelector('#types [data-k=audio]')), doc: P(document.querySelector('#types [data-k=doc]')), link: P(document.querySelector('#types [data-k=link]')), play: P(document.querySelector('#v1 .play')), open: P(document.querySelector('#v2 .act')), lnk: P($('lnk')), selt: P($('selt')) };
+  // Scene windows
+  const W = { s1: [0, 4], s2: [4, 11], s3: [11, 17.5], s4: [17.5, 25], s5: [25, 28.5], s6: [28.5, 31] };
+  for (const [id, [s, e]] of Object.entries(W)) scene($(id), s, e, id === 's6');
+
+  // 1 · Hook
+  fade($('h0'), .3); rise($('h1'), .5, .7, 40);
+  [['f1', .2], ['f2', .5], ['f3', .8], ['f4', 1.1]].forEach(([id, s]) => { rise($(id), s, .6, 40); A($(id), 1.6, 2.2, [{ transform: $(id).style.transform + ' translateY(0)' }, { transform: $(id).style.transform + ' translateY(-18px)' }], 'ease-in-out'); });
+  A($('h1'), 2.9, .6, [{ opacity: 1 }, { opacity: 1 }]);
+
+  // 2 · Save   (scene starts at 4)
+  const c2x = (x, y) => [x + 90, y + 46]; // app offset
+  rise($('c2'), 4.6, .5, 20);
+  A($('chev'), 5.6, .3, [{ opacity: 0 }, { opacity: 1 }]);
+  A($('menu'), 6.1, .3, [{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'scale(1)' }], 'cubic-bezier(.2,1.2,.4,1)');
+  out($('menu'), 6.75, .2);
+  A($('scrim'), 6.8, .3, [{ opacity: 0 }, { opacity: 1 }]);
+  A($('dlg'), 6.85, .45, [{ opacity: 0, transform: 'translateY(24px) scale(.96)' }, { opacity: 1, transform: 'translateY(0) scale(1)' }]);
+  const TEXT = 'Recipes';
+  ticks.push(t => { const n = Math.max(0, Math.min(TEXT.length, Math.floor((t - 7.4) / .09))); $('typed').textContent = TEXT.slice(0, n); $('caret').style.opacity = (Math.floor(t * 2) % 2 === 0 || n < TEXT.length) ? 1 : 0; });
+  cursor($('cur2'), 4.4, [[0, [330, 590]], [1.0, [T.chev[0] - 70, T.chev[1] + 30]], [1.5, T.chev], [1.9, T.chev], [2.3, T.mbm], [3.0, T.mbm], [3.9, T.save], [4.2, T.save]]);
+  click($('ring2'), T.chev, 5.95); click($('ring2'), T.mbm, 6.7); click($('ring2'), T.save, 8.4);
+  out($('dlg'), 8.5); out($('scrim'), 8.5);
+  A($('toast'), 8.7, .35, [{ opacity: 0, transform: 'translate(-50%,16px)' }, { opacity: 1, transform: 'translate(-50%,0)' }]);
+  out($('toast'), 10.2, .4);
+
+  // 3 · Browse (starts 11)
+  rise($('c3'), 11.6, .5, 20);
+  document.querySelectorAll('#s3 .card').forEach((c, i) => rise(c, 11.5 + i * .28, .55, 28));
+  const types = [...document.querySelectorAll('#types .chip')];
+  const kinds = { audio: 1, doc: 1, link: 1 };
+  const on = (k, from, to) => {
+    const chip = types.find(c => c.dataset.k === k);
+    ticks.push(t => { const active = t >= from && t < to; chip.classList.toggle('on', active); types[0].classList.toggle('on', !(t >= 13.0 && t < 16.0)); });
+    document.querySelectorAll('#s3 .card').forEach(card => { if (card.dataset.k !== k) { X(card, from, .35, [{ opacity: 1 }, { opacity: .22 }]); X(card, to, .35, [{ opacity: .22 }, { opacity: 1 }]); } });
+  };
+  on('audio', 13.0, 14.4); on('doc', 14.5, 15.7); on('link', 15.8, 16.9);
+  cursor($('cur3'), 11.2, [[0, [760, 560]], [1.7, [T.audio[0] - 30, T.audio[1] + 14]], [1.8, T.audio], [3.3, T.audio], [3.4, T.doc], [4.6, T.doc], [4.7, T.link], [5.7, T.link]]);
+  click($('ring3'), T.audio, 13.0); click($('ring3'), T.doc, 14.5); click($('ring3'), T.link, 15.8);
+
+  // 4 · Open (starts 17.5)
+  fade($('v1'), 17.9, .4); out($('v1'), 20.0, .4);
+  fade($('v2'), 20.3, .4); out($('v2'), 22.4, .4);
+  fade($('v3'), 22.7, .4);
+  A($('c4a'), 17.8, .45, [{ opacity: 0, transform: 'translate(-50%,20px)' }, { opacity: 1, transform: 'translate(-50%,0)' }]); out($('c4a'), 20.0);
+  A($('c4b'), 20.3, .45, [{ opacity: 0, transform: 'translate(-50%,20px)' }, { opacity: 1, transform: 'translate(-50%,0)' }]); out($('c4b'), 22.4);
+  A($('c4c'), 22.7, .45, [{ opacity: 0, transform: 'translate(-50%,20px)' }, { opacity: 1, transform: 'translate(-50%,0)' }]); out($('c4c'), 24.6);
+  const wave = $('wave'); const heights = []; for (let i = 0; i < 38; i++) { const h = 8 + Math.abs(Math.sin(i * 1.3) * 14 + Math.sin(i * .5) * 12); heights.push(h); const s = document.createElement('s'); s.style.height = h + 'px'; wave.append(s); }
+  ticks.push(t => { const p = Math.max(0, Math.min(1, (t - 18.5) / 1.4)); wave.childNodes.forEach((s, i) => { s.style.background = i / 38 < p ? '#008069' : '#b7c3c9'; }); const sec = Math.floor(p * 42); $('time').textContent = `0:${String(sec).padStart(2, '0')}`; });
+  ticks.push(t => { const p = Math.max(0, Math.min(1, (t - 23.5) / .5)); $('selt').className = p > .5 ? 'sel' : ''; });
+  cursor($('cur4'), 17.7, [[0, [420, 420]], [.8, T.play], [1.0, T.play], [2.6, T.open], [3.0, T.open], [4.0, [T.lnk[0] - 160, T.selt[1]]], [4.6, [T.selt[0] + 150, T.selt[1]]], [5.2, T.lnk], [6.2, T.lnk]]);
+  click($('ring4'), T.play, 18.5); click($('ring4'), T.open, 20.7); click($('ring4'), T.lnk, 23.4);
+  A($('lnk'), 23.4, .2, [{ background: 'transparent' }, { background: '#cfe3ff' }]);
+
+  // 5 · Privacy (starts 25)
+  pop($('lock'), 25.2, .6); fade($('p0'), 25.6); [['p1', 25.9], ['p2', 26.3], ['p3', 26.7]].forEach(([id, s]) => rise($(id), s, .5, 22));
+
+  // 6 · End (starts 28.5)
+  pop($('logo'), 28.7, .6); rise($('e1'), 29.0, .5, 20); rise($('e2'), 29.3, .5, 20); pop($('e3'), 29.6, .5);
+
+  function setTime(t) {
+    t = Math.max(0, Math.min(DUR, t));
+    for (const { a, start } of anims) a.currentTime = (t - start) * 1000; // negative = not started yet
+    for (const f of ticks) f(t);
+    window.__t = t;
+  }
+  window.setTime = setTime; window.PROMO_DURATION = DUR;
+
+  function fit() { const s = Math.min(innerWidth / 1280, innerHeight / 720); $('fit').style.transform = `translate(-50%,-50%) scale(${s})`; }
+  addEventListener('resize', fit); fit();
+
+  if (new URLSearchParams(location.search).has('capture')) { setTime(0); return; }
+  // Normal viewing: loops automatically. Press Space to pause, ←/→ to scrub.
+  let start = performance.now(), paused = false, offset = 0;
+  addEventListener('keydown', e => {
+    if (e.code === 'Space') { paused = !paused; if (!paused) start = performance.now() - offset * 1000; e.preventDefault(); }
+    if (e.code === 'ArrowRight') { offset = Math.min(DUR, offset + 1); start = performance.now() - offset * 1000; }
+    if (e.code === 'ArrowLeft') { offset = Math.max(0, offset - 1); start = performance.now() - offset * 1000; }
+  });
+  (function loop(now) { if (!paused) { offset = ((now - start) / 1000) % (DUR + 1); } setTime(offset); requestAnimationFrame(loop); })(performance.now());
+})();
+</script>
+</body>
+</html>

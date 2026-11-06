@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.1 — 2026-11-06
+### Fixed
+- Audio player in the viewer collapsed to a tiny control without a seek bar.
+- With a type filter active, collections that had no matching bookmarks still appeared (e.g. `Ideas · 0`).
+
+### Improved
+- More compact list cards: the sender's name is no longer repeated in 1:1 chats, so more bookmarks fit on screen.
+- Store screenshots can now be generated from the real UI with invented data (`promo/screens/`).
+
 ## 1.6.0 — 2026-11-06
 First production release.
 

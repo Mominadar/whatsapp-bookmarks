@@ -93,7 +93,9 @@ export async function runRegressionTests({ parseHTML, NodeFilter }) {
     assert.equal(starred, 0, 'Bookmark never invokes Star');
     f.document.querySelector('.wab-nav-button').click(); await settle();
     const section = f.shadows.get('wab-section-host');
-    assert.equal(section.querySelector('.bubble-sender').textContent, 'Alice');
+    // In a 1:1 chat the sender equals the chat name already shown in the card heading, so it is not repeated.
+    assert.equal(section.querySelector('.bubble-sender'), null, 'sender not repeated when it equals the chat name');
+    assert.equal(section.querySelector('.chat-name').textContent, 'Alice');
     assert.equal(section.querySelector('.message-date').textContent, '11/5/2026');
     assert.equal(section.querySelector('.bubble-meta').textContent, '10:00');
     assert.ok(section.querySelector('.message-bubble'), 'Starred-style message bubble rendered');
@@ -315,7 +317,7 @@ export async function runRegressionTests({ parseHTML, NodeFilter }) {
   assert.equal(stalledDialog.querySelector('.copy-debug').hidden,false);
   await stalledDialog.querySelector('.copy-debug').onclick();
   const debugText=stalledDialog.querySelector('.debug-report').value,debug=JSON.parse(debugText);
-  assert.equal(debug.extensionVersion,'1.6.0');assert.equal(debug.phase,'error');assert.equal(debug.originalSource.mediaKind,'audio');
+  assert.equal(debug.extensionVersion,'1.6.1');assert.equal(debug.phase,'error');assert.equal(debug.originalSource.mediaKind,'audio');
   assert.equal(stalledDialog.querySelector('.debug-report').hidden,false);
   assert.equal(debugText.includes('Alice'),false);assert.equal(debugText.includes('123@c.us'),false);assert.equal(debugText.includes('Keep this message'),false);assert.equal(debugText.includes('base64'),false);
   results.push('copyable capture diagnostics exclude chat names, message contents, IDs, and media bytes');
