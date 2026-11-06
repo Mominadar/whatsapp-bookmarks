@@ -66,7 +66,7 @@ Requires Chrome 111 or newer.
 
 ## Privacy
 
-Bookmarks live in the extension's local IndexedDB storage. Nothing is uploaded or synced, and the extension contacts no server of its own; the only requests it makes are to WhatsApp's media servers, to read a message you chose to bookmark. Uninstalling the extension or clearing its storage deletes your bookmarks, and other people using the same Chrome profile can see them. See [PRIVACY.md](PRIVACY.md) for details and [STORE_LISTING.md](STORE_LISTING.md) for the permission justifications.
+Bookmarks live in the extension's local IndexedDB storage. Nothing is uploaded or synced, and the extension contacts no server of its own; the only requests it makes are to WhatsApp's media servers, to read a message you chose to bookmark. Uninstalling the extension or clearing its storage deletes your bookmarks, and other people using the same Chrome profile can see them. See [PRIVACY.md](PRIVACY.md) (or the hostable page [docs/privacy.html](docs/privacy.html)) for details and [STORE_LISTING.md](STORE_LISTING.md) for the permission justifications.
 
 ## Troubleshooting
 
@@ -115,9 +115,15 @@ node promo/screens/render-screens.mjs store/screenshots     # Node 22+ and Googl
 
 ```sh
 node promo/render.mjs /tmp/promo-frames 30 1.5      # 31 s of PNG frames at 1920x1080
-ffmpeg -framerate 30 -i /tmp/promo-frames/frame_%04d.png -c:v libx264 -crf 18 -pix_fmt yuv420p store/whatsapp-bookmarks-promo.mp4
+ffmpeg -framerate 30 -i /tmp/promo-frames/frame_%04d.png -c:v libx264 -crf 18 -pix_fmt yuv420p promo/out/whatsapp-bookmarks-promo-silent.mp4
 ```
-The video is silent; add music in any editor. Refresh `store/promo-poster.png` with `ffmpeg -ss 14.2 -i store/whatsapp-bookmarks-promo.mp4 -frames:v 1 -vf scale=1280:-1 store/promo-poster.png`. It uses a generic mock UI, not WhatsApp's branding or real chats.
+The soundtrack is an original, royalty-free track synthesised by `promo/music.py` (needs numpy), with soft click sounds timed to the cursor clicks. Mix it in with:
+
+```sh
+python3 promo/music.py /tmp/promo-music.wav
+ffmpeg -i promo/out/whatsapp-bookmarks-promo-silent.mp4 -i /tmp/promo-music.wav -map 0:v -map 1:a -c:v copy -af "loudnorm=I=-16:TP=-1.5:LRA=7" -c:a aac -b:a 192k -shortest store/whatsapp-bookmarks-promo.mp4
+```
+Refresh `store/promo-poster.png` with `ffmpeg -ss 14.2 -i store/whatsapp-bookmarks-promo.mp4 -frames:v 1 -vf scale=1280:-1 store/promo-poster.png`. It uses a generic mock UI, not WhatsApp's branding or real chats.
 
 ### Releasing
 1. Bump `version` in `manifest.json` and `package.json`, and the version string in the debug report in `content.js` (the regression test checks it).

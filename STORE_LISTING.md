@@ -49,10 +49,10 @@ Let users save WhatsApp Web messages (including their media) into named, locally
 - Collects: **website content** (the messages and media the user chooses to bookmark), stored locally only.
 - Not sold or transferred to third parties; not used for purposes unrelated to the single purpose; not used for creditworthiness or lending.
 - Remote code: **No**. All code is bundled in the package.
-- Privacy policy URL: host `PRIVACY.md` (for example on GitHub Pages or the repository's raw/blob URL) and paste the link.
+- Privacy policy URL: `docs/privacy.html` is a self-contained page made for hosting. With GitHub Pages: push the repo, open **Settings → Pages**, choose **Deploy from a branch**, branch `main`, folder `/docs`, then use `https://<your-username>.github.io/<repo-name>/privacy.html`. Open the URL in a private window to confirm it loads without signing in before pasting it into the dashboard. (`PRIVACY.md` is the same text for readers browsing the repo.)
 
 ## Assets to upload
 - Store icon 128×128: `assets/icon-128.png` (a 512×512 master is in `assets/icon-512.png`).
 - **Screenshots (ready):** `store/screenshots/` has six 1280×800 PNGs (menu, save dialog, browse/open, voice notes, files/PDF, dark theme). They were rendered from the real extension code against a mock chat page with invented people and messages, so no private chats appear. The Web Store accepts up to five; the first five are a good set, and the dark-theme one is a nice sixth if you want it. Regenerate with `node promo/screens/render-screens.mjs store/screenshots` after UI changes.
-- Optional demo video: `store/whatsapp-bookmarks-promo.mp4` (31 s, 1920×1080, silent; the Web Store takes a YouTube link, so upload it there first).
+- Optional demo video: `store/whatsapp-bookmarks-promo.mp4` (31 s, 1920×1080, with an original synthesised soundtrack; the Web Store takes a YouTube link, so upload it there first).
 - Optional promo tiles: small 440×280, marquee 1400×560.

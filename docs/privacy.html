@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy Policy — WhatsApp Bookmarks</title>
+<meta name="description" content="Privacy policy for the WhatsApp Bookmarks Chrome extension.">
+<link rel="icon" href="icon-48.png">
+<style>
+  :root { --bg:#f6faf8; --card:#fff; --ink:#111b21; --muted:#5b6b73; --line:#e2e8e5; --accent:#0b8a69; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b141a; --card:#111b21; --ink:#e9edef; --muted:#9aa9b1; --line:#222d34; --accent:#22c997; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:40px 20px 64px; }
+  header { display:flex; align-items:center; gap:16px; margin-bottom:8px; }
+  header img { width:56px; height:56px; }
+  h1 { margin:0; font-size:28px; line-height:1.2; letter-spacing:-.4px; }
+  .updated { color:var(--muted); margin:4px 0 28px; font-size:14px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:6px 24px 18px; margin:16px 0; }
+  h2 { font-size:19px; margin:20px 0 8px; color:var(--accent); }
+  ul { padding-left:22px; margin:8px 0; } li { margin:6px 0; }
+  a { color:var(--accent); }
+  .note { color:var(--muted); font-size:14px; }
+  footer { margin-top:28px; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icon-128.png" alt="" width="56" height="56">
+    <h1>Privacy Policy<br><span style="font-weight:500;font-size:18px;color:var(--muted)">WhatsApp Bookmarks</span></h1>
+  </header>
+  <p class="updated">Last updated: 6 November 2026</p>
+
+  <section>
+    <h2>Summary</h2>
+    <p>WhatsApp Bookmarks keeps everything you save <strong>on your own device</strong>. It has no account, no server of its own, no analytics and no ads. The developer never receives your messages, files or any other data.</p>
+    <p class="note">This extension is an independent project. It is not affiliated with, endorsed by, or sponsored by WhatsApp or Meta.</p>
+  </section>
+
+  <section>
+    <h2>What the extension stores</h2>
+    <p>When you choose <strong>Bookmark</strong> on a message in WhatsApp Web, the extension saves the following, only for that message:</p>
+    <ul>
+      <li>the message text, sender name, chat name, date and time shown on screen;</li>
+      <li>any voice note, video, image or file you bookmarked (up to 25 MB each);</li>
+      <li>the collection name and the optional label you entered.</li>
+    </ul>
+    <p>It does not read, copy or store messages you have not chosen to bookmark.</p>
+  </section>
+
+  <section>
+    <h2>Where it is stored</h2>
+    <p>Bookmarks are stored in the extension's own local database (IndexedDB) inside your Chrome profile on your computer. They are not synced, uploaded or shared. Anyone who can use your Chrome profile on this computer can view them.</p>
+  </section>
+
+  <section>
+    <h2>Network access</h2>
+    <p>The extension runs only on <code>https://web.whatsapp.com</code>. It sends no data to the developer or to any third party. The only network requests it makes are to WhatsApp's own servers, to read the media attached to a message you chose to bookmark, in the same way WhatsApp Web itself loads that media.</p>
+  </section>
+
+  <section>
+    <h2>How media is copied</h2>
+    <p>To copy a bookmarked voice note, video or file, the extension briefly observes the media player or download link of the message you selected, and only while the bookmark dialog is open. It then stops observing. Playback is silent and restored afterwards, and a file download is read by the extension instead of being saved to your Downloads folder.</p>
+  </section>
+
+  <section>
+    <h2>Permissions</h2>
+    <ul>
+      <li><strong>Access to web.whatsapp.com</strong> — to add the Bookmark option and the bookmarks pane, and to read the message you choose to save.</li>
+      <li><strong>contextMenus</strong> — to add a "Bookmark this WhatsApp message" entry to Chrome's right-click menu on WhatsApp Web.</li>
+      <li><strong>unlimitedStorage</strong> — so saved voice notes, videos and files are not rejected by the default browser storage quota.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What the extension does not do</h2>
+    <ul>
+      <li>No analytics, telemetry, advertising or tracking.</li>
+      <li>No selling or sharing of data, and no use of data for purposes unrelated to saving your bookmarks.</li>
+      <li>No remote code: all code ships inside the extension package.</li>
+      <li>No access to WhatsApp's private application APIs, your credentials or your contacts.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Debug report</h2>
+    <p>The optional <strong>Copy debug info</strong> button copies a technical report to your clipboard, only when you click it. It contains structural information such as selector counts and capture status, and excludes chat names, message contents, message IDs and media. It is never sent anywhere automatically.</p>
+  </section>
+
+  <section>
+    <h2>Your control</h2>
+    <p>You can remove any bookmark inside the extension. To delete everything, uninstall the extension or clear its site data in Chrome; this permanently deletes all saved bookmarks.</p>
+  </section>
+
+  <section>
+    <h2>Children</h2>
+    <p>The extension is not directed at children and does not knowingly collect personal information from anyone.</p>
+  </section>
+
+  <section>
+    <h2>Changes to this policy</h2>
+    <p>If this policy changes, the date at the top of this page will be updated and the change recorded in the project's changelog.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>Questions about this policy can be raised by opening an issue in the project's repository.</p>
+  </section>
+
+  <footer>© WhatsApp Bookmarks. WhatsApp is a trademark of its respective owner and is used only to describe what the extension works with.</footer>
+</main>
+</body>
+</html>
