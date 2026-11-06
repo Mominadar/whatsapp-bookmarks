@@ -1,0 +1,16 @@
+{
+  "name": "whatsapp-bookmarks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --input-type=module -e 'import(\"linkedom\").then(async dom => { const { runRegressionTests } = await import(\"./tests/regression.mjs\"); console.log(await runRegressionTests(dom)); })'",
+    "check": "for f in background navigation media media-bridge content; do node --check $f.js || exit 1; done",
+    "icons": "python3 scripts/make-icons.py",
+    "package": "sh scripts/package.sh"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.12"
+  },
+  "version": "1.6.0",
+  "description": "Chrome extension that saves WhatsApp Web messages into local bookmark collections."
+}

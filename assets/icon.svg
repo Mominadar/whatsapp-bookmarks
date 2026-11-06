@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="WhatsApp Bookmarks">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22c997"/>
+      <stop offset="1" stop-color="#0b8a69"/>
+    </linearGradient>
+  </defs>
+  <!-- Chat-bubble tile -->
+  <rect x="8" y="8" width="112" height="100" rx="28" fill="url(#tile)"/>
+  <path d="M22 100 L16 123 L46 106 Z" fill="#0b8a69" stroke="#0b8a69" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Bookmark ribbon -->
+  <path d="M46 28h36a6 6 0 0 1 6 6v58L64 76 40 92V34a6 6 0 0 1 6-6Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+</svg>

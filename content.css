@@ -1,0 +1,34 @@
+.wab-nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  padding: 8px;
+  margin: 0;
+  background: transparent;
+  color: var(--wab-muted, #54656f);
+  cursor: pointer;
+  font: 10px/1.4 system-ui, sans-serif;
+}
+.wab-nav-button[aria-pressed="true"] { background: var(--wab-active, #d9dbdf); color: var(--wab-text, #111b21); }
+.wab-nav-button[aria-pressed="true"] svg { fill: currentColor; }
+.wab-content-open { position: relative !important; }
+.wab-content-open > :not(#wab-section-host) { visibility: hidden !important; pointer-events: none !important; }
+#wab-section-host { position: absolute; inset: 0; z-index: 3; display: block; overflow: hidden; pointer-events: auto !important; visibility: visible !important; }
+#wab-section-host[hidden] { display: none; }
+.wab-viewer-open { isolation: isolate; }
+.wab-viewer-open > :not(#wab-viewer-host) { visibility: hidden !important; pointer-events: none !important; }
+#wab-viewer-host { position: absolute; inset: 0; z-index: 4; display: block; min-height: 0; min-width: 0; overflow: hidden; pointer-events: auto !important; visibility: visible !important; }
+#wab-viewer-host.wab-fixed { position: fixed; inset: auto; z-index: 999; background: var(--wab-list, #fff); }
+#wab-viewer-host[hidden] { display: none; }
+.wab-nav-button:hover, .wab-menu-item:hover { background: var(--wab-hover, #e9edef); }
+.wab-nav-button:focus-visible, .wab-menu-item:focus-visible { outline: 2px solid #00a884; outline-offset: -2px; }
+.wab-native-menu-item {
+  cursor: pointer;
+}
+
+.wab-nav-slot { display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-sizing: border-box; }
