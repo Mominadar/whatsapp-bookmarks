@@ -125,9 +125,45 @@
   // Autoplaying or viewer-hosted players may never call play(), so also catch them by media events.
   for (const type of ['loadedmetadata','loadeddata','canplay','playing'])
     window.addEventListener(type,event=>{ if (active && event.target instanceof HTMLMediaElement) watch(event.target,active); },true);
+  // Shared-contact cards only show a name in the DOM; the vCard (with numbers) lives in WhatsApp's React props.
+  function readContacts(messageId) {
+    const node=[...document.querySelectorAll('[data-id]')].find(item=>item.getAttribute('data-id')===messageId);
+    const result={vcards:[],keys:[]};
+    if (!node) return result;
+    const seen=new Set(), found=new Set();
+    const isPlain=value=>value && typeof value==='object' && !(value instanceof Node) && !(value instanceof Window);
+    // Bounded breadth-first search through React fiber props and any message model they reference.
+    const queue=[];
+    const roots=[];
+    for (const key of Object.keys(node)) if (key.startsWith('__reactProps$')) roots.push(node[key]);
+    let fiber=null;
+    for (const key of Object.keys(node)) if (key.startsWith('__reactFiber$')) fiber=node[key];
+    for (let step=0; fiber && step<40; step++, fiber=fiber.return) { roots.push(fiber.memoizedProps); if (fiber.stateNode && isPlain(fiber.stateNode) && !(fiber.stateNode instanceof Element)) roots.push(fiber.stateNode.props); }
+    roots.forEach(root=>queue.push([root,0]));
+    let visited=0;
+    while (queue.length && visited<6000 && found.size<10) {
+      const [value,depth]=queue.shift();
+      if (typeof value==='string') { if (/BEGIN:VCARD/i.test(value)) found.add(value.slice(0,4000)); continue; }
+      if (!isPlain(value) || seen.has(value) || depth>7) continue;
+      seen.add(value);visited++;
+      let names=[];try {names=Object.keys(value);} catch {continue;}
+      if (result.keys.length<40 && names.some(name=>/vcard|contact/i.test(name))) result.keys.push(names.slice(0,25).join(','));
+      for (const name of names) {
+        if (/^(_owner|_debugOwner|return|alternate|child|sibling|stateNode|ref|_store|__proto__)$/.test(name)) continue;
+        let child;try {child=value[name];} catch {continue;}
+        if (typeof child==='string' || isPlain(child)) queue.push([child,depth+1]);
+      }
+    }
+    result.vcards=[...found];
+    return result;
+  }
   window.addEventListener('message',event=>{
     if (event.source !== window || event.origin !== location.origin) return;
     const data=event.data;
+    if (data?.type==='WAB_CONTACT_READ' && typeof data.requestId==='string' && typeof data.messageId==='string' && data.messageId.length<200) {
+      window.postMessage({type:'WAB_CONTACT_RESULT',requestId:data.requestId,...readContacts(data.messageId)},location.origin);
+      return;
+    }
     if (data?.type==='WAB_MEDIA_CAPTURE_CANCEL' && active?.id===data.requestId) {dispose(active);return;}
     if (data?.type!=='WAB_MEDIA_CAPTURE_ARM' || typeof data.requestId!=='string' || data.requestId.length>100 || !['audio','video','document'].includes(data.kind)) return;
     dispose(active);

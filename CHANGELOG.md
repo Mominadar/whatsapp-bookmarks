@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.0 — 2026-11-10
+### Added
+- Shared contacts are now bookmarked as proper contact cards: name, selectable phone numbers and a Copy number button, styled like WhatsApp's own contact card.
+- New "Contacts" type filter.
+
+### Improved
+- The extension now uses WhatsApp's own font stack instead of the browser default, so it matches the rest of the page.
+- Redesigned the bookmark dialog: sectioned layout, quoted-message style preview, bordered fields with focus states and rounded action buttons.
+- Redesigned the collections dropdown: folder icons, bookmark counts, a highlighted current collection, a clearer "Create" row, an empty state and an animated chevron.
+
 ## 1.6.1 — 2026-11-06
 ### Fixed
 - Audio player in the viewer collapsed to a tiny control without a seek bar.

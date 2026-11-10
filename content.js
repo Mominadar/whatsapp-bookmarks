@@ -9,8 +9,8 @@
   const sectionRoot = sectionHost.attachShadow({ mode: 'closed' });
   root.innerHTML = `
     <style>
-      :host { color-scheme:var(--wab-color-scheme, light); font:14px/1.5 system-ui,sans-serif; color:var(--wab-text); }
-      * { box-sizing:border-box; } button,input { font:inherit; } button { cursor:pointer; }
+      :host { color-scheme:var(--wab-color-scheme, light); font:14px/1.5 -apple-system,"Segoe UI","Helvetica Neue",Helvetica,"Lucida Grande",Arial,"Noto Sans",Ubuntu,Cantarell,sans-serif; color:var(--wab-text); }
+      * { box-sizing:border-box; font-family:-apple-system,"Segoe UI","Helvetica Neue",Helvetica,"Lucida Grande",Arial,"Noto Sans",Ubuntu,Cantarell,sans-serif; } button,input,textarea,summary,select { font:inherit; } button { cursor:pointer; }
       button:focus-visible,input:focus-visible { outline:3px solid #55caaa; outline-offset:2px; }
       .panel { width:100%; height:100%; min-height:0; background:var(--wab-surface); display:flex; flex-direction:column; }
       [hidden] { display:none !important; }
@@ -74,6 +74,41 @@
       .collection-option:hover, .collection-option[aria-selected="true"] { background:var(--wab-hover); }
       .collection-hint { margin:6px 0 0; font-size:12px; color:var(--wab-muted); }
       .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--wab-toast); color:var(--wab-text); padding:12px 20px; border-radius:10px; z-index:2147483647; max-width:90vw; }
+      /* ---- Bookmark dialog ---- */
+      .dialog { border-radius:12px; width:min(440px,100%); padding:0; display:flex; flex-direction:column; box-shadow:0 12px 48px #0004, 0 0 0 1px var(--wab-border); }
+      .dialog > * { margin-left:24px; margin-right:24px; }
+      .dialog h2 { margin:24px 24px 4px; font-size:19px; font-weight:500; letter-spacing:0; }
+      .dialog > h2 + .muted { margin-bottom:4px; line-height:1.4; }
+      .dialog .preview { margin-top:16px; padding:10px 12px; border-radius:0 8px 8px 0; border-left:4px solid var(--wab-accent); background:var(--wab-field); max-height:110px; line-height:1.4; font-size:13.5px; }
+      .dialog .capture-status { margin-top:8px; } .dialog .capture-status:empty { display:none; }
+      .dialog label { margin:20px 24px 6px; font-size:12px; font-weight:500; letter-spacing:.02em; color:var(--wab-muted); }
+      .dialog label .muted { font-weight:400; }
+      .dialog input { padding:10px 12px; border:1px solid var(--wab-border); border-radius:8px; background:var(--wab-field); transition:border-color .15s, box-shadow .15s; }
+      .dialog > input { width:calc(100% - 48px); }
+      .dialog input:hover { border-color:var(--wab-muted); }
+      .dialog input:focus, .dialog .collection-field:focus-within { outline:0; border-color:var(--wab-accent); box-shadow:0 0 0 1px var(--wab-accent); }
+      .dialog .collection-field { border:1px solid var(--wab-border); border-radius:8px; background:var(--wab-field); transition:border-color .15s, box-shadow .15s; }
+      .dialog .collection-field:hover { border-color:var(--wab-muted); }
+      .dialog .collection-field input, .dialog .collection-field input:hover, .dialog .collection-field input:focus { border:0; box-shadow:none; background:transparent; }
+      .dialog .collection-picker { margin-bottom:0; }
+      .dialog .collection-hint { margin:6px 24px 0; }
+      .dialog .actions { margin:24px 0 0; padding:14px 24px; gap:8px; border-top:1px solid var(--wab-border); }
+      .dialog .actions button { border-radius:20px; padding:9px 22px; font-size:14px; font-weight:500; background:transparent; color:var(--wab-accent); transition:background .15s, opacity .15s; }
+      .dialog .actions button:hover { background:var(--wab-hover); }
+      .dialog .actions .primary { padding:9px 24px; } .dialog .actions .primary:hover { background:var(--wab-primary-button)!important; opacity:.9; }
+      .dialog .actions button:disabled { opacity:.5; cursor:default; }
+      .dialog button:focus-visible, .dialog input:focus-visible { outline:2px solid var(--wab-accent); outline-offset:2px; } .dialog input:focus-visible { outline:0; }
+      .dialog .collection-toggle { display:grid; place-items:center; width:36px; height:36px; margin-inline-end:2px; padding:0; border-radius:50%; transition:background .15s; }
+      .dialog .collection-toggle:hover { background:var(--wab-hover); }
+      .dialog .collection-toggle svg { transition:transform .2s; } .dialog .collection-toggle[aria-expanded="true"] svg { transform:rotate(180deg); }
+      .dialog .collection-options { top:calc(100% + 6px); max-height:208px; padding:6px; border:1px solid var(--wab-border); border-radius:10px; background:var(--wab-surface); box-shadow:0 8px 28px #0003; }
+      .dialog .collection-option { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:6px; font-size:14px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .dialog .collection-option::before { content:""; flex:none; width:16px; height:16px; background:var(--wab-muted); -webkit-mask:var(--folder) center/contain no-repeat; mask:var(--folder) center/contain no-repeat; --folder:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 6.5A1.5 1.5 0 0 1 4.5 5h4.2l2 2.5h8.8A1.5 1.5 0 0 1 21 9v9.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z'/></svg>"); }
+      .dialog .collection-option.create { color:var(--wab-accent); font-weight:500; }
+      .dialog .collection-option.create::before { background:var(--wab-accent); --folder:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z'/></svg>"); }
+      .dialog .collection-option.current { font-weight:600; } .dialog .collection-option.current::before { background:var(--wab-accent); }
+      .dialog .collection-count { margin-inline-start:auto; padding:1px 8px; border-radius:10px; background:var(--wab-hover); color:var(--wab-muted); font-size:11.5px; font-weight:500; }
+      .dialog .collection-empty { padding:12px 10px; font-size:13px; color:var(--wab-muted); text-align:center; }
       /* ---- Polish ---- */
       header { box-shadow:0 1px 0 var(--wab-border); }
       h1 { font-size:22px; font-weight:700; letter-spacing:-.4px; }
@@ -111,7 +146,7 @@
     <div class="overlay" hidden><form class="dialog" role="dialog" aria-modal="true" aria-labelledby="wab-title">
       <h2 id="wab-title">Bookmark message</h2><div class="muted">Keep it close. Add a collection, or leave it unnamed.</div>
       <div class="preview"></div><div class="capture-status muted" role="status" aria-live="polite"></div><div class="capture-tools" hidden><button type="button" class="save-without-file" hidden>Save without the file</button><button type="button" class="load-native-media">Load from WhatsApp</button><button type="button" class="copy-debug" hidden>Copy debug info</button></div><textarea class="debug-report" aria-label="Bookmark debug info" readonly hidden></textarea><label for="wab-collection">Collection</label>
-      <div class="collection-picker"><div class="collection-field"><input id="wab-collection" maxlength="80" placeholder="Unnamed" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="wab-collection-options" aria-expanded="false"><button type="button" class="collection-toggle" aria-label="Show existing collections" aria-controls="wab-collection-options" aria-expanded="false">⌄</button></div>
+      <div class="collection-picker"><div class="collection-field"><input id="wab-collection" maxlength="80" placeholder="Unnamed" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="wab-collection-options" aria-expanded="false"><button type="button" class="collection-toggle" aria-label="Show existing collections" aria-controls="wab-collection-options" aria-expanded="false"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       <div id="wab-collection-options" class="collection-options" role="listbox" aria-label="Collections" hidden></div></div>
       <p class="collection-hint">Choose an existing collection or type a new name.</p>
       <label for="wab-note">Label <span class="muted">(optional)</span></label><input id="wab-note" maxlength="120" placeholder="A name or short description" autocomplete="off">
@@ -137,11 +172,12 @@
   let typeFilter = 'all', bridgeWatching = false;
   const CAPTURED_KINDS = ['audio','video','document'];
   const mediaWord = kind => kind==='video'?'video':kind==='document'?'document':'voice note';
-  const CONTENT_TYPES = [['all','All types'],['text','Text'],['audio','Audio'],['video','Video'],['document','Files'],['link','Links'],['image','Images']];
+  const CONTENT_TYPES = [['all','All types'],['text','Text'],['audio','Audio'],['video','Video'],['document','Files'],['link','Links'],['contact','Contacts'],['image','Images']];
   const LINK_PATTERN = /(?:https?:\/\/|www\.)\S+/i;
   function itemTypes(item) {
     const types = new Set((item.media || []).map(media => media.kind));
     if (item.mediaKind) types.add(item.mediaKind);
+    if (item.contacts?.length) types.add('contact');
     if (item.text) { types.add('text'); if (LINK_PATTERN.test(item.text)) types.add('link'); }
     return types;
   }
@@ -312,6 +348,10 @@
       const kinds = new Set((item.media || []).map(media => media.kind)); if (item.mediaKind) kinds.add(item.mediaKind);
       const image = (item.media || []).find(media => media.kind === 'image' && /^data:image\//.test(media.data || ''));
       if (image && !item.text) { const node = el('img'); node.src = image.data; node.alt = 'Bookmarked image'; body.append(node); }
+      else if (item.contacts?.length) {
+        const chip = el('span', 'media-chip'); chip.append(el('span', 'glyph', '👤'), el('span', '', item.contacts.map(contact => contact.name).join(', ')));
+        body.append(chip);
+      }
       else if (!item.text || kinds.has('audio') || kinds.has('video') || kinds.has('document')) {
         const docName = (item.media || []).find(media => media.kind === 'document')?.name;
         const label = kinds.has('document') ? ['📄', docName || 'Document'] : kinds.has('video') ? ['🎬','Video'] : kinds.has('audio') ? ['🎤','Voice message'] : kinds.has('image') ? ['🖼','Image'] : ['','Message'];
@@ -325,8 +365,8 @@
       card.append(preview);
       if (item.mediaNote) card.append(el('p', 'muted', item.mediaNote));
       const tools = el('div', 'entry-tools');
-      const typeLabels = {document:'File', video:'Video', audio:'Voice', image:'Image', link:'Link', text:'Text'};
-      const itemKinds = itemTypes(item), primary = ['document','video','audio','image','link','text'].find(type => itemKinds.has(type));
+      const typeLabels = {document:'File', video:'Video', audio:'Voice', image:'Image', link:'Link', contact:'Contact', text:'Text'};
+      const itemKinds = itemTypes(item), primary = ['document','video','audio','image','contact','link','text'].find(type => itemKinds.has(type));
       tools.append(el('span', 'badge', item.collection)); if (primary) tools.append(el('span', 'type-pill', typeLabels[primary]));
       const menu = el('details', 'entry-menu');
       const summary = el('summary', '', '⌄'); summary.setAttribute('aria-label', 'Bookmark actions');
@@ -370,7 +410,9 @@
   viewerRoot.append(root.querySelector('style').cloneNode(true));
   const viewerStyle = el('style');
   viewerStyle.textContent = `
-    :host { color-scheme:var(--wab-color-scheme); pointer-events:auto; }
+    :host { color-scheme:var(--wab-color-scheme); pointer-events:auto; font:14px/1.5 -apple-system,"Segoe UI","Helvetica Neue",Helvetica,"Lucida Grande",Arial,"Noto Sans",Ubuntu,Cantarell,sans-serif; }
+    * { font-family:-apple-system,"Segoe UI","Helvetica Neue",Helvetica,"Lucida Grande",Arial,"Noto Sans",Ubuntu,Cantarell,sans-serif; }
+    button,input,textarea,summary,select { font:inherit; }
     .viewer, .viewer * { pointer-events:auto; }
     .viewer { position:absolute; inset:0; height:100%; min-width:0; min-height:0; overflow:hidden; display:flex; flex-direction:column; background:var(--wab-list); }
     .viewer-header { flex-shrink:0; display:flex; align-items:center; gap:14px; padding:12px 20px; background:var(--wab-surface); border-bottom:1px solid var(--wab-border); }
@@ -391,6 +433,13 @@
     .saved-message audio { width:100%; margin:12px 0; padding:0; }
     .text-link { color:var(--wab-accent); text-decoration:underline; cursor:pointer; overflow-wrap:anywhere; }
     .saved-message.has-doc { width:min(760px,90%); } .saved-message.has-doc .message-bubble { width:100%; }
+    .contact-card { margin:2px 0 6px; border-radius:7px; background:var(--wab-field); overflow:hidden; min-width:240px; }
+    .contact-head { display:flex; align-items:center; gap:12px; padding:10px 12px; }
+    .contact-avatar { flex:none; width:44px; height:44px; border-radius:50%; display:grid; place-items:center; background:var(--wab-selected); color:var(--wab-accent); font-size:18px; font-weight:600; }
+    .contact-info { flex:1; min-width:0; } .contact-info strong { display:block; font-size:15px; font-weight:500; overflow:hidden; text-overflow:ellipsis; user-select:text; }
+    .contact-number { display:block; font-size:13px; color:var(--wab-muted); user-select:text; }
+    .contact-copy { display:block; width:100%; padding:10px 12px; border:0; border-top:1px solid var(--wab-border); background:transparent; color:var(--wab-accent); font-size:14px; font-weight:500; text-align:center; cursor:pointer; }
+    .contact-copy:hover { background:var(--wab-hover); } .contact-copy:focus-visible { outline:2px solid var(--wab-accent); outline-offset:-2px; }
     .doc-card { display:flex; align-items:center; gap:12px; padding:10px; margin:6px 0; border-radius:8px; background:var(--wab-field); }
     .doc-icon { font-size:28px; } .doc-info { flex:1; min-width:0; } .doc-info strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; user-select:text; } .doc-info span { font-size:12px; }
     .doc-actions { display:flex; gap:6px; flex-shrink:0; } .doc-action { padding:5px 10px; border-radius:14px; background:var(--wab-hover); color:var(--wab-accent); font-size:12px; text-decoration:none; }
@@ -532,6 +581,22 @@
     if (presentation.sender) bubble.append(el('div','bubble-sender',presentation.sender));
     if (item.text) bubble.append(linkifiedText(item.text));
     let usable=0;
+    for (const contact of item.contacts || []) {
+      const card=el('div','contact-card'), head=el('div','contact-head'), info=el('div','contact-info');
+      const avatar=el('div','contact-avatar',Array.from(contact.name || '#')[0]?.toLocaleUpperCase() || '#');avatar.setAttribute('aria-hidden','true');
+      const phones=contact.phones || [];
+      info.append(el('strong','',contact.name));
+      if (!phones.length) info.append(el('span','contact-number','No number on this card'));
+      for (const phone of phones) info.append(el('span','contact-number',phone.display));
+      head.append(avatar,info);card.append(head);
+      for (const phone of phones) {
+        const copy=el('button','contact-copy',phones.length>1?`Copy ${phone.display}`:'Copy number');copy.type='button';
+        const label=copy.textContent;
+        copy.onclick=async()=>{try{await navigator.clipboard.writeText(phone.display);copy.textContent='Copied';}catch{copy.textContent='Copy failed';}setTimeout(()=>copy.textContent=label,1500);};
+        card.append(copy);
+      }
+      bubble.append(card);usable++;
+    }
     for (const media of item.media || []) {
       if (media.kind==='image' && /^data:image\//.test(media.data || '')) {
         const button=el('button','saved-image-button'); button.setAttribute('aria-label','View saved image');
@@ -652,13 +717,16 @@
     if (create) collectionChoices.push(query);
     collectionActive = -1; field.removeAttribute('aria-activedescendant');
     list.replaceChildren(...collectionChoices.map((name, index) => {
-      const option = el('button', 'collection-option', create && name === query ? `Create “${name}”` : name);
+      const isCreate = create && name === query;
+      const option = el('button', 'collection-option' + (isCreate ? ' create' : '') + (!isCreate && name.toLocaleLowerCase() === query.toLocaleLowerCase() ? ' current' : ''), isCreate ? `Create “${name}”` : name);
+      if (!isCreate) { const count = items.filter(item => (item.collection || 'Unnamed') === name).length; if (count) option.append(el('span', 'collection-count', String(count))); }
       option.type = 'button'; option.tabIndex = -1; option.id = 'wab-collection-choice-' + index;
       option.setAttribute('role', 'option'); option.setAttribute('aria-selected', 'false');
       option.onmousedown = event => event.preventDefault();
       option.onclick = () => chooseCollection(name);
       return option;
     }));
+    if (!collectionChoices.length) list.append(el('div', 'collection-empty', 'No collections yet. Type a name to create one.'));
     list.hidden = false; field.setAttribute('aria-expanded', 'true'); $('.collection-toggle').setAttribute('aria-expanded', 'true');
   }
   $('#wab-collection').onfocus = () => renderCollectionOptions(true);
@@ -807,7 +875,7 @@
   $('.copy-debug').onclick=async()=>{
     const id=pending?.messageId;
     const report={
-      extensionVersion:'1.6.1',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
+      extensionVersion:'1.7.0',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
       savedReference:{hasMessageId:!!id,hasChat:!!pending?.chat,hasChatId:!!pending?.chatId,hasMetadata:!!pending?.meta,hasText:!!pending?.text,mediaKind:pending?.mediaKind || '',mediaCount:pending?.media.length || 0},
       page:{hasMain:!!document.querySelector('#main'),messageContainers:document.querySelectorAll(messageSelector).length,identifiedElements:document.querySelectorAll('[data-id]').length,metadataElements:document.querySelectorAll('[data-pre-plain-text]').length,matchingMessageIds:id?[...document.querySelectorAll('[data-id]')].filter(node=>node.getAttribute('data-id')===id).length:0},
       originalSource:sourceDebug,currentSource:describeSource(pendingSource),lastMenuSource:describeSource(menuMessage),lastHoveredSource:describeSource(hoveredMessage),
@@ -923,6 +991,47 @@
       const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(blob);
     });
   }
+  // Shared contacts: the DOM shows only a name, so ask the page-world bridge for the vCard and fall back to visible text.
+  function parseVCard(card) {
+    const unfold = String(card).replace(/\r?\n[ \t]/g,'');
+    let name='';const phones=[];
+    for (const line of unfold.split(/\r?\n/)) {
+      const match=/^([^:]+):(.*)$/.exec(line);if (!match) continue;
+      const field=match[1].split(';')[0].toUpperCase().replace(/^ITEM\d+\./,''), value=match[2].trim();
+      if (field==='FN' && value) name=value;
+      else if (field==='N' && !name) name=value.split(';').filter(Boolean).reverse().join(' ').trim();
+      else if (field==='TEL') { const waid=/waid=(\d+)/i.exec(match[1])?.[1]; if (value || waid) phones.push({display:value || '+'+waid,digits:(waid || value).replace(/\D/g,'')}); }
+    }
+    return name || phones.length ? {name:name || phones[0].display,phones:phones.filter((phone,index,all)=>all.findIndex(other=>other.digits===phone.digits)===index)} : null;
+  }
+  function readVCards(messageId) {
+    if (!messageId) return Promise.resolve([]);
+    return new Promise(resolve=>{
+      const requestId=crypto.randomUUID();
+      const done=value=>{window.removeEventListener('message',listener);clearTimeout(timer);resolve(value);};
+      const listener=event=>{
+        if (event.source!==window || event.origin!=='https://web.whatsapp.com' || event.data?.type!=='WAB_CONTACT_RESULT' || event.data.requestId!==requestId) return;
+        if (Array.isArray(event.data.keys) && event.data.keys.length) console.debug('[WhatsApp Bookmarks] contact fields',event.data.keys);
+        done(Array.isArray(event.data.vcards)?event.data.vcards.filter(card=>typeof card==='string'):[]);
+      };
+      const timer=setTimeout(()=>done([]),1500);
+      window.addEventListener('message',listener);
+      window.postMessage({type:'WAB_CONTACT_READ',requestId,messageId},'https://web.whatsapp.com');
+    });
+  }
+  function domContact(message) {
+    const hasAction=[...message.querySelectorAll('button, [role="button"]')].some(node=>/^(message|view all|add to group|view contact)$/i.test((node.textContent || '').trim()));
+    if (!hasAction || message.querySelector('audio, video')) return null;
+    const text=(message.innerText || '').split('\n').map(line=>line.trim()).filter(Boolean);
+    const name=text.find(line=>!/^(message|view all|add to group|view contact|\d{1,2}:\d{2}(\s?[ap]m)?)$/i.test(line));
+    const phones=[...new Set(text.join(' ').match(/\+?\d[\d\s().-]{7,}\d/g) || [])].map(display=>({display:display.trim(),digits:display.replace(/\D/g,'')})).filter(phone=>phone.digits.length>=8);
+    return name ? {name,phones} : null;
+  }
+  async function readContacts(message, messageId) {
+    const contacts=(await readVCards(messageId)).map(parseVCard).filter(Boolean);
+    if (contacts.length) return contacts;
+    const fallback=domContact(message);return fallback?[fallback]:[];
+  }
   async function capture(message) {
     if (!message?.isConnected) { toast('Open a message’s menu and choose Bookmark.'); return; }
     try {
@@ -935,6 +1044,7 @@
       const meta = (message.matches('[data-pre-plain-text]') ? message : message.querySelector('[data-pre-plain-text]'))?.getAttribute('data-pre-plain-text') || '';
       const textNodes = [...message.querySelectorAll('.selectable-text')].filter(node => !node.parentElement.closest('.selectable-text'));
       const text = textNodes.map(node => node.innerText).filter(Boolean).join('\n');
+      const contacts = await readContacts(message, messageId);
       await reload();
       const existing = messageId && items.find(item => item.messageId === messageId);
 
@@ -944,7 +1054,7 @@
       const collected=expectedKind?{media:[],mediaKind:expectedKind,mediaNote:''}:await mediaDeadline(collectMessageMedia(message),15000);
       const {media,mediaKind,mediaNote}=collected;
       const usable=media.length?media:(existing?.media || []).filter(item=>!mediaKind || item.kind===mediaKind);
-      showDialog({ ...existing, id:existing?.id || crypto.randomUUID(), messageId, text:text || existing?.text || '', meta, chat:chat || existing?.chat || '', chatId:chatId || existing?.chatId || '', media:usable, mediaKind:mediaKind || existing?.mediaKind || '', mediaNote:mediaNote || '', savedAt:existing?.savedAt || Date.now(), collection:existing?.collection || 'Unnamed' }, !!existing, message);
+      showDialog({ ...existing, id:existing?.id || crypto.randomUUID(), messageId, text:contacts.length?'':text || existing?.text || '', contacts:contacts.length?contacts:existing?.contacts || [], meta, chat:chat || existing?.chat || '', chatId:chatId || existing?.chatId || '', media:usable, mediaKind:mediaKind || existing?.mediaKind || '', mediaNote:mediaNote || '', savedAt:existing?.savedAt || Date.now(), collection:existing?.collection || 'Unnamed' }, !!existing, message);
     } catch (error) { toast(error.message); }
   }
   $('.close').onclick = () => closeSection(true);
