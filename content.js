@@ -107,7 +107,7 @@
       .dialog .collection-option.create { color:var(--wab-accent); font-weight:500; }
       .dialog .collection-option.create::before { background:var(--wab-accent); --folder:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z'/></svg>"); }
       .dialog .collection-option.current { font-weight:600; } .dialog .collection-option.current::before { background:var(--wab-accent); }
-      .dialog .collection-count { margin-inline-start:auto; padding:1px 8px; border-radius:10px; background:var(--wab-hover); color:var(--wab-muted); font-size:11.5px; font-weight:500; }
+      .dialog .collection-option[data-count]::after { content:attr(data-count); margin-inline-start:auto; padding:1px 8px; border-radius:10px; background:var(--wab-hover); color:var(--wab-muted); font-size:11.5px; font-weight:500; }
       .dialog .collection-empty { padding:12px 10px; font-size:13px; color:var(--wab-muted); text-align:center; }
       /* ---- Polish ---- */
       header { box-shadow:0 1px 0 var(--wab-border); }
@@ -207,6 +207,14 @@
     path.setAttribute('stroke-linejoin', 'round'); svg.append(path);
     return svg;
   }
+  function uiIcon(path, size = 24) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('width', String(size)); svg.setAttribute('height', String(size)); svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2'); svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
+    const node = document.createElementNS('http://www.w3.org/2000/svg', 'path'); node.setAttribute('d', path); svg.append(node);
+    return svg;
+  }
+  const ICON_BACK = 'M19 12H5M11 6l-6 6 6 6', ICON_CLOSE = 'M6 6l12 12M18 6 6 18';
   function messagePresentation(item) {
     const match = /^\[([^\]]+)\]\s*(.*?):\s*$/.exec(item.meta || '');
     const parts = match?.[1].split(',') || [];
@@ -416,7 +424,7 @@
     .viewer, .viewer * { pointer-events:auto; }
     .viewer { position:absolute; inset:0; height:100%; min-width:0; min-height:0; overflow:hidden; display:flex; flex-direction:column; background:var(--wab-list); }
     .viewer-header { flex-shrink:0; display:flex; align-items:center; gap:14px; padding:12px 20px; background:var(--wab-surface); border-bottom:1px solid var(--wab-border); }
-    .viewer-title { flex:1; min-width:0; } .viewer-title strong { display:block; font-size:16px; } .viewer-title span { display:block; font-size:12px; color:var(--wab-muted); }
+    .viewer-title { flex:1; min-width:0; } .viewer-title strong { display:block; font-size:16px; } .viewer-title .viewer-sub { display:flex; align-items:center; gap:5px; } .viewer-title span { display:block; font-size:12px; color:var(--wab-muted); }
     .viewer-avatar { width:40px; height:40px; border-radius:50%; background:var(--wab-field); display:grid; place-items:center; color:var(--wab-muted); font-size:20px; flex-shrink:0; }
     .viewer-body { flex:1 1 0%; min-height:0; min-width:0; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; touch-action:pan-y; scrollbar-gutter:stable; padding:24px 6%; }
     .conversation-thread { max-width:1100px; margin:0 auto; }
@@ -452,7 +460,7 @@
     .viewer-add { border:1px solid var(--wab-border); background:var(--wab-surface); color:var(--wab-text); border-radius:20px; padding:7px 12px; font-size:12px; }
     .lightbox { position:fixed; inset:0; z-index:2147483647; background:#000e; display:flex; align-items:center; justify-content:center; padding:48px 20px 20px; }
     .lightbox img { max-width:100%; max-height:calc(100vh - 80px); object-fit:contain; }
-    .lightbox-close { position:absolute; top:12px; right:20px; color:white; background:#333; border:0; border-radius:50%; width:36px; height:36px; font-size:20px; }
+    .lightbox-close { position:absolute; top:12px; right:20px; color:white; background:#333; border:0; border-radius:50%; width:36px; height:36px; display:grid; place-items:center; padding:0; } .lightbox-close:hover { background:#555; }
     @media(max-width:700px) { .viewer-body { padding:16px; } .saved-message { max-width:95%; } }
   `;
   viewerRoot.append(viewerStyle);
@@ -533,7 +541,7 @@
     viewerRoot.querySelector('.lightbox')?.remove();
     const lightbox = el('div','lightbox'); lightbox.setAttribute('role','dialog'); lightbox.setAttribute('aria-modal','true'); lightbox.setAttribute('aria-label','Saved image'); lightbox.tabIndex = -1;
     const image = el('img'); image.src = source; image.alt = 'Saved image';
-    const close = el('button','lightbox-close','×'); close.setAttribute('aria-label','Close image');
+    const close = el('button','lightbox-close'); close.append(uiIcon(ICON_CLOSE,20)); close.setAttribute('aria-label','Close image');
     const dismiss = () => { lightbox.remove(); viewerRoot.querySelector('.saved-image-button')?.focus(); };
     close.onclick = dismiss; lightbox.onclick = event => { if (event.target === lightbox) dismiss(); };
     lightbox.onkeydown = event => {
@@ -560,9 +568,9 @@
     stopSavedAudio(); viewerRoot.querySelector('.viewer')?.remove(); viewerRoot.querySelector('.lightbox')?.remove();
     const view = el('section','viewer'); view.setAttribute('aria-label','Saved message');
     const header = el('div','viewer-header');
-    const close = el('button','icon','←'); close.setAttribute('aria-label','Close saved message'); close.onclick = () => { closeSavedViewer(); sectionRoot.querySelector('.message-preview')?.focus(); };
+    const close = el('button','icon'); close.append(uiIcon(ICON_BACK)); close.setAttribute('aria-label','Close saved message'); close.onclick = () => { closeSavedViewer(); sectionRoot.querySelector('.message-preview')?.focus(); };
     const avatar=el('div','viewer-avatar',Array.from(item.chat || messagePresentation(item).sender || 'B')[0]);avatar.setAttribute('aria-hidden','true');
-    const title = el('div','viewer-title'); title.append(el('strong','',item.chat || 'Saved message'),el('span','',`Bookmarked message · ${item.collection || 'Unnamed'}`));
+    const title = el('div','viewer-title'); title.append(el('strong','',item.chat || 'Saved message'),(()=>{const sub=el('span','viewer-sub');sub.append(bookmarkGlyph(12),document.createTextNode(item.collection || 'Unnamed'));return sub;})());
     const add = el('button','viewer-add','Add media'); add.title = 'Attach a downloaded image, audio, or video file to this bookmark';
     const file = el('input'); file.type='file'; file.accept='image/*,audio/*,video/*,application/*,text/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip,application/ogg,.opus,.ogg,.oga,.mp3,.m4a,.aac,.wav,.webm,.mp4,.mov'; file.hidden=true; add.onclick=()=>file.click();
     file.onchange = async () => {
@@ -719,7 +727,7 @@
     list.replaceChildren(...collectionChoices.map((name, index) => {
       const isCreate = create && name === query;
       const option = el('button', 'collection-option' + (isCreate ? ' create' : '') + (!isCreate && name.toLocaleLowerCase() === query.toLocaleLowerCase() ? ' current' : ''), isCreate ? `Create “${name}”` : name);
-      if (!isCreate) { const count = items.filter(item => (item.collection || 'Unnamed') === name).length; if (count) option.append(el('span', 'collection-count', String(count))); }
+      if (!isCreate) { const count = items.filter(item => (item.collection || 'Unnamed') === name).length; if (count) option.dataset.count = String(count); }
       option.type = 'button'; option.tabIndex = -1; option.id = 'wab-collection-choice-' + index;
       option.setAttribute('role', 'option'); option.setAttribute('aria-selected', 'false');
       option.onmousedown = event => event.preventDefault();
@@ -875,7 +883,7 @@
   $('.copy-debug').onclick=async()=>{
     const id=pending?.messageId;
     const report={
-      extensionVersion:'1.7.0',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
+      extensionVersion:'1.7.2',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
       savedReference:{hasMessageId:!!id,hasChat:!!pending?.chat,hasChatId:!!pending?.chatId,hasMetadata:!!pending?.meta,hasText:!!pending?.text,mediaKind:pending?.mediaKind || '',mediaCount:pending?.media.length || 0},
       page:{hasMain:!!document.querySelector('#main'),messageContainers:document.querySelectorAll(messageSelector).length,identifiedElements:document.querySelectorAll('[data-id]').length,metadataElements:document.querySelectorAll('[data-pre-plain-text]').length,matchingMessageIds:id?[...document.querySelectorAll('[data-id]')].filter(node=>node.getAttribute('data-id')===id).length:0},
       originalSource:sourceDebug,currentSource:describeSource(pendingSource),lastMenuSource:describeSource(menuMessage),lastHoveredSource:describeSource(hoveredMessage),
@@ -888,6 +896,13 @@
       await navigator.clipboard.writeText(text);$('.copy-debug').textContent='Debug info copied';
     } catch {field.focus();field.select?.();$('.copy-debug').textContent='Select and copy the debug info below';}
   };
+  // WhatsApp's PDF/media viewer is an overlay outside the message; find its controls by label, icon or test id.
+  function previewControls(message, pattern) {
+    const hint = node => [node.getAttribute('aria-label'), node.getAttribute('title'), node.getAttribute('data-icon'), node.getAttribute('data-testid'), node.querySelector?.('svg title')?.textContent].filter(Boolean).join(' ');
+    return [...document.querySelectorAll('[aria-label], [title], [data-icon], [data-testid]')]
+      .filter(node => !message.contains(node) && !node.closest('#side, #pane-side, #whatsapp-bookmarks-extension, #wab-section-host, #wab-viewer-host') && pattern.test(hint(node)))
+      .map(node => node.closest('button, [role="button"]') || node);
+  }
   async function loadSelectedMedia(automatic=false) {
     const item=pending;if (!item) return;
     const message=selectedMessageSource(item);pendingSource=message;
@@ -917,13 +932,17 @@
         trace(control?`click ${control.tagName}${control.getAttribute('data-testid')?'['+control.getAttribute('data-testid')+']':''}`:`no-control; hasPlayer=${!!player}`);
         if (control) control.click();else if (typeof player?.play==='function') player.play().catch(()=>{});
         else throw new Error('Could not locate the selected message’s play control. Keep it visible and click Retry copying.');
-        const started=Date.now();let firstControl=control,lastClick=Date.now(),nextFallback=1,modalDownload=false;bridgeWatching=false;
+        const started=Date.now();let firstControl=control,lastClick=Date.now(),nextFallback=1,modalDownload=false,traceIcons=false;bridgeWatching=false;
         while (pending===item && mediaLoadContext===session && Date.now()-started<budget-3000) {
           if (bridge.error) throw new Error(bridge.error);
           // Some builds open a preview with its own Download control; use it once if the message click did not download.
           if (item.mediaKind==='document' && !bridgeWatching && !modalDownload && Date.now()-started>5000) {
-            const outside=[...document.querySelectorAll('[aria-label*="download" i], [data-icon*="download"], [title*="download" i]')].find(node=>!message.contains(node) && !node.closest('#wab-host, #wab-section-host, #wab-viewer-host, #side'));
-            if (outside) {modalDownload=true;trace('click preview download');(outside.closest('button, [role="button"]') || outside).click();}
+            const outside=previewControls(message,/download/i)[0];
+            if (outside) {modalDownload=true;trace('click preview download');outside.click();}
+            else if (!traceIcons) {
+              traceIcons=true;
+              trace('no preview download; outside icons: '+[...new Set(previewControls(message,/./).map(node=>node.getAttribute('data-icon') || node.getAttribute('aria-label') || node.getAttribute('data-testid') || '').filter(value=>/^[\w .-]{1,40}$/.test(value)))].slice(0,30).join('|'));
+            }
           }
           // If a video click produced nothing (no viewer, no watched player), try the next candidate control.
           if (!icon && !bridgeWatching && (item.mediaKind!=='video' || !document.querySelector('video')) && Date.now()-lastClick>4000 && nextFallback<fallbacks.length) {
@@ -940,7 +959,7 @@
           await new Promise(resolve=>setTimeout(resolve,250));
         }
         // Close a preview we opened to reach its Download button (Escape here closes the preview, not the chat).
-        if (modalDownload) document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true}));
+        if (modalDownload) { const closer=previewControls(message,/^(close|x|x-viewer|x-alt|close-refreshed)$|\bclose\b/i)[0]; if (closer) closer.click(); else document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true})); }
       }
       if (pending!==item) return;
       // WhatsApp may open videos in a full-screen viewer. Close it only if a video lives outside the message; Escape elsewhere would close the chat.
@@ -953,6 +972,7 @@
     finally {
       // A viewer opened for capture must not be left covering the chat. Escape is only safe when a video lives outside the message.
       if (item.mediaKind==='video' && [...document.querySelectorAll('video')].some(video=>!message.contains(video))) document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true}));
+      if (item.mediaKind==='document') { const closer=previewControls(message,/^(close|x|x-viewer|x-alt|close-refreshed)$|\bclose\b/i)[0]; if (closer && previewControls(message,/download/i).length) closer.click(); }
       bridge.cancel();button.disabled=false;if (mediaLoadContext===session) {mediaLoadContext=null;nativeAudioInteraction=null;}}
   }
   $('.load-native-media').onclick=()=>loadSelectedMedia();
@@ -1028,9 +1048,10 @@
     return name ? {name,phones} : null;
   }
   async function readContacts(message, messageId) {
+    const fallback=domContact(message);
+    if (!fallback) return []; // Only contact cards pay for the page-world lookup.
     const contacts=(await readVCards(messageId)).map(parseVCard).filter(Boolean);
-    if (contacts.length) return contacts;
-    const fallback=domContact(message);return fallback?[fallback]:[];
+    return contacts.length?contacts:[fallback];
   }
   async function capture(message) {
     if (!message?.isConnected) { toast('Open a message’s menu and choose Bookmark.'); return; }
@@ -1275,7 +1296,9 @@
         node.textContent = replaced ? '' : 'Bookmark'; replaced = true;
       } else if (/ctrl|alt|shift|⌘|⇧|↵/i.test(text)) node.textContent = '';
     }
-    if (!replaced) row.append(el('span', '', 'Bookmark'));
+    // Icon-only toolbars (the image/PDF viewer) have no visible label to replace, so don't add one; the tooltip names the button.
+    const hadVisibleText = texts.some(node => !node.parentElement?.closest('svg, [data-icon]') && node.textContent.trim());
+    if (!replaced && hadVisibleText) row.append(el('span', '', 'Bookmark'));
     for (const node of [row, ...row.querySelectorAll('*')]) {
       for (const attr of [...node.attributes]) {
         if (['id', 'data-testid', 'aria-disabled', 'aria-checked', 'aria-pressed', 'aria-describedby', 'aria-labelledby', 'aria-controls', 'disabled'].includes(attr.name) || attr.name.startsWith('on')) node.removeAttribute(attr.name);
@@ -1285,7 +1308,7 @@
       if (node.hasAttribute('tabindex')) node.tabIndex = -1;
     }
     const control = row.querySelector('button, [role="button"], [role="menuitem"]') || row;
-    control.setAttribute('role', 'menuitem'); control.setAttribute('aria-label', 'Bookmark'); control.tabIndex = 0;
+    control.setAttribute('role', 'menuitem'); control.setAttribute('aria-label', 'Bookmark'); control.tabIndex = 0; if (!hadVisibleText) control.title = 'Bookmark';
     if (row !== control) { row.setAttribute('role', 'none'); row.removeAttribute('tabindex'); }
     const icon = row.querySelector('[data-icon], svg');
     if (icon) {

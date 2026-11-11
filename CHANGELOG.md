@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.7.2 — 2026-11-11
+### Fixed
+- Copying a PDF/document into a bookmark failed with WhatsApp's new PDF viewer; its Download button is now found reliably and the viewer is closed afterwards.
+- The Bookmark button in WhatsApp's image/PDF viewer toolbar no longer shows a text label, so it matches the neighbouring icons.
+
+### Improved
+- Saved-message viewer uses proper icons for the back arrow, image close button and collection subtitle.
+
+## 1.7.1 — 2026-11-11
+### Fixed
+- Bookmarking a regular message no longer waits on the shared-contact lookup; only contact cards do.
+- Collection counts in the dropdown no longer become part of the option text.
+
 ## 1.7.0 — 2026-11-10
 ### Added
 - Shared contacts are now bookmarked as proper contact cards: name, selectable phone numbers and a Copy number button, styled like WhatsApp's own contact card.

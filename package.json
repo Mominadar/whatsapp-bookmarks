@@ -11,6 +11,6 @@
   "devDependencies": {
     "linkedom": "0.18.12"
   },
-  "version": "1.7.0",
+  "version": "1.7.2",
   "description": "Chrome extension that saves WhatsApp Web messages into local bookmark collections."
 }
