@@ -17,11 +17,11 @@
 .wab-nav-button[aria-pressed="true"] { background: var(--wab-active, #d9dbdf); color: var(--wab-text, #111b21); }
 .wab-nav-button[aria-pressed="true"] svg { fill: currentColor; }
 .wab-content-open { position: relative !important; }
-.wab-content-open > :not(#wab-section-host) { visibility: hidden !important; pointer-events: none !important; }
+.wab-content-open > :not(#wab-section-host), .wab-content-open > :not(#wab-section-host) * { visibility: hidden !important; pointer-events: none !important; }
 #wab-section-host { position: absolute; inset: 0; z-index: 3; display: block; overflow: hidden; pointer-events: auto !important; visibility: visible !important; }
 #wab-section-host[hidden] { display: none; }
 .wab-viewer-open { isolation: isolate; }
-.wab-viewer-open > :not(#wab-viewer-host) { visibility: hidden !important; pointer-events: none !important; }
+.wab-viewer-open > :not(#wab-viewer-host), .wab-viewer-open > :not(#wab-viewer-host) * { visibility: hidden !important; pointer-events: none !important; }
 #wab-viewer-host { position: absolute; inset: 0; z-index: 4; display: block; min-height: 0; min-width: 0; overflow: hidden; pointer-events: auto !important; visibility: visible !important; }
 #wab-viewer-host.wab-fixed { position: fixed; inset: auto; z-index: 999; background: var(--wab-list, #fff); }
 #wab-viewer-host[hidden] { display: none; }

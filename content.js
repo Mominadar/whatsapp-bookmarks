@@ -883,7 +883,7 @@
   $('.copy-debug').onclick=async()=>{
     const id=pending?.messageId;
     const report={
-      extensionVersion:'1.7.2',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
+      extensionVersion:'1.7.3',phase:capturePhase,moveOnly:pendingMoveOnly,bridge:bridgeDebug,
       savedReference:{hasMessageId:!!id,hasChat:!!pending?.chat,hasChatId:!!pending?.chatId,hasMetadata:!!pending?.meta,hasText:!!pending?.text,mediaKind:pending?.mediaKind || '',mediaCount:pending?.media.length || 0},
       page:{hasMain:!!document.querySelector('#main'),messageContainers:document.querySelectorAll(messageSelector).length,identifiedElements:document.querySelectorAll('[data-id]').length,metadataElements:document.querySelectorAll('[data-pre-plain-text]').length,matchingMessageIds:id?[...document.querySelectorAll('[data-id]')].filter(node=>node.getAttribute('data-id')===id).length:0},
       originalSource:sourceDebug,currentSource:describeSource(pendingSource),lastMenuSource:describeSource(menuMessage),lastHoveredSource:describeSource(hoveredMessage),
@@ -932,20 +932,20 @@
         trace(control?`click ${control.tagName}${control.getAttribute('data-testid')?'['+control.getAttribute('data-testid')+']':''}`:`no-control; hasPlayer=${!!player}`);
         if (control) control.click();else if (typeof player?.play==='function') player.play().catch(()=>{});
         else throw new Error('Could not locate the selected message’s play control. Keep it visible and click Retry copying.');
-        const started=Date.now();let firstControl=control,lastClick=Date.now(),nextFallback=1,modalDownload=false,traceIcons=false;bridgeWatching=false;
+        const started=Date.now();let firstControl=control,lastClick=Date.now(),nextFallback=1,modalDownload=false,lastModal=0,traceIcons=false;bridgeWatching=false;
         while (pending===item && mediaLoadContext===session && Date.now()-started<budget-3000) {
           if (bridge.error) throw new Error(bridge.error);
           // Some builds open a preview with its own Download control; use it once if the message click did not download.
-          if (item.mediaKind==='document' && !bridgeWatching && !modalDownload && Date.now()-started>5000) {
+          if (item.mediaKind==='document' && !bridgeWatching && Date.now()-started>2500 && Date.now()-lastModal>4000) {
             const outside=previewControls(message,/download/i)[0];
-            if (outside) {modalDownload=true;trace('click preview download');outside.click();}
+            if (outside) {modalDownload=true;lastModal=Date.now();trace('click preview download');outside.click();}
             else if (!traceIcons) {
               traceIcons=true;
               trace('no preview download; outside icons: '+[...new Set(previewControls(message,/./).map(node=>node.getAttribute('data-icon') || node.getAttribute('aria-label') || node.getAttribute('data-testid') || '').filter(value=>/^[\w .-]{1,40}$/.test(value)))].slice(0,30).join('|'));
             }
           }
           // If a video click produced nothing (no viewer, no watched player), try the next candidate control.
-          if (!icon && !bridgeWatching && (item.mediaKind!=='video' || !document.querySelector('video')) && Date.now()-lastClick>4000 && nextFallback<fallbacks.length) {
+          if (!icon && !bridgeWatching && !(item.mediaKind==='document' && previewControls(message,/download/i).length) && (item.mediaKind!=='video' || !document.querySelector('video')) && Date.now()-lastClick>4000 && nextFallback<fallbacks.length) {
             const next=fallbacks[nextFallback++];lastClick=Date.now();trace(`retry click ${next.tagName}${next.getAttribute('data-testid')?'['+next.getAttribute('data-testid')+']':''}`);next.click();
           }
           // An undownloaded voice note shows Download first; once it finishes, WhatsApp shows Play, which must be clicked too.

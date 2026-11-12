@@ -1,6 +1,6 @@
 # Privacy Policy — WhatsApp Bookmarks
 
-_Last updated: 2026-11-06_
+_Last updated: 2026-11-12_
 
 WhatsApp Bookmarks is a browser extension that runs only on `https://web.whatsapp.com`. It is an independent project and is not affiliated with WhatsApp or Meta.
 
@@ -9,6 +9,7 @@ When you choose **Bookmark** on a message, the extension saves, on your device o
 
 - the message text, sender name, chat name, date and time shown on screen;
 - any voice note, video, image or file you bookmarked (up to 25 MB each);
+- for a shared contact you bookmarked, the contact's name and phone number(s);
 - the collection name and optional label you entered.
 
 ## Where it is stored
@@ -18,7 +19,7 @@ In the extension's own local IndexedDB database inside your Chrome profile. It i
 - It does not send any data to the developer or any third party. The only network requests it makes are to WhatsApp's own media servers, to read the media of a message you chose to bookmark.
 - It does not use analytics, telemetry, advertising or tracking.
 - It does not read or store messages you have not chosen to bookmark.
-- It does not use WhatsApp's private application APIs or your credentials.
+- It does not call WhatsApp's private application APIs or use your credentials, and it does not read your address book or contacts list. To save a shared contact you bookmarked, it reads that one contact card from the page data WhatsApp Web has already loaded.
 
 ## How it reads media
 To copy a bookmarked voice note, video or file, the extension briefly observes the media player or download link of the message you selected, only while the bookmark dialog is open. It then stops observing.

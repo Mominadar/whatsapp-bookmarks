@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.3 — 2026-11-12
+### Fixed
+- Bookmarking a PDF/document you had not opened first could time out; the extension now keeps retrying WhatsApp's viewer Download button until the file arrives.
+- The saved-message view no longer shows the previous chat's header on top of its own header.
+
+### Changed
+- Privacy policy (`PRIVACY.md`, `docs/privacy.html`), README and store listing now describe shared-contact bookmarks (name and phone number stored on your device).
+
 ## 1.7.2 — 2026-11-11
 ### Fixed
 - Copying a PDF/document into a bookmark failed with WhatsApp's new PDF viewer; its Download button is now found reliably and the viewer is closed afterwards.

@@ -317,7 +317,7 @@ export async function runRegressionTests({ parseHTML, NodeFilter }) {
   assert.equal(stalledDialog.querySelector('.copy-debug').hidden,false);
   await stalledDialog.querySelector('.copy-debug').onclick();
   const debugText=stalledDialog.querySelector('.debug-report').value,debug=JSON.parse(debugText);
-  assert.equal(debug.extensionVersion,'1.7.2');assert.equal(debug.phase,'error');assert.equal(debug.originalSource.mediaKind,'audio');
+  assert.equal(debug.extensionVersion,'1.7.3');assert.equal(debug.phase,'error');assert.equal(debug.originalSource.mediaKind,'audio');
   assert.equal(stalledDialog.querySelector('.debug-report').hidden,false);
   assert.equal(debugText.includes('Alice'),false);assert.equal(debugText.includes('123@c.us'),false);assert.equal(debugText.includes('Keep this message'),false);assert.equal(debugText.includes('base64'),false);
   results.push('copyable capture diagnostics exclude chat names, message contents, IDs, and media bytes');

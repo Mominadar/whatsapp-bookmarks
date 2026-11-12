@@ -8,7 +8,7 @@ WhatsApp Bookmarks
 > Naming risk: store reviewers can reject names that lead with a third-party trademark. If the listing is rejected, use **Bookmarks for WhatsApp Web** and keep the "not affiliated" disclaimer in the description.
 
 ## Summary (max 132 characters)
-Save WhatsApp Web messages, voice notes, videos, images and files into named collections, stored privately on your device.
+Save WhatsApp Web messages, voice notes, videos, images, shared contacts and files into named collections, stored privately on your device.
 
 ## Category
 Productivity
@@ -18,10 +18,10 @@ Keep the WhatsApp messages that matter.
 
 WhatsApp Bookmarks adds a **Bookmark** option to the message menu on WhatsApp Web. Save a message into a named collection and find it again in a clean bookmarks pane beside your chats.
 
-★ Save text, voice notes, videos, images and files (PDF, Word, Excel and more)
+★ Save text, voice notes, videos, images, shared contacts and files (PDF, Word, Excel and more)
 ★ Organise into collections and add an optional label to any bookmark
-★ Filter by collection name and by type: Text, Audio, Video, Files, Links, Images
-★ Open any bookmark in a chat-style viewer: select and copy text, click links, play audio and video, view images, open or download files
+★ Filter by collection name and by type: Text, Audio, Video, Files, Links, Contacts, Images
+★ Open any bookmark in a chat-style viewer: select and copy text, click links, play audio and video, view images, copy a contact's number, open or download files
 ★ Move, relabel or remove bookmarks any time
 ★ Matches WhatsApp's light and dark themes
 

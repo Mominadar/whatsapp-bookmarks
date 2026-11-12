@@ -2,7 +2,7 @@
 
 # WhatsApp Bookmarks
 
-A Chrome extension that lets you save WhatsApp Web messages into named collections and open them later in a chat-style viewer. Text, voice notes, videos, images and files (PDF, Word, Excel and more) are all supported. Everything is stored on your device: there is no account, server, analytics or API key. The only network access is reading the media of a message you bookmark, from WhatsApp's own servers, exactly as WhatsApp Web itself would.
+A Chrome extension that lets you save WhatsApp Web messages into named collections and open them later in a chat-style viewer. Text, voice notes, videos, images, shared contacts and files (PDF, Word, Excel and more) are all supported. Everything is stored on your device: there is no account, server, analytics or API key. The only network access is reading the media of a message you bookmark, from WhatsApp's own servers, exactly as WhatsApp Web itself would.
 
 > Independent project. Not affiliated with, endorsed by, or sponsored by WhatsApp or Meta.
 
@@ -27,14 +27,15 @@ All screenshots use invented chats and show the real extension UI.
 
 - **Bookmark from the native menu.** Open a message's menu (Reply, Forward, Star…) and choose **Bookmark**. It also works from WhatsApp's right-click menu, and Chrome's own context menu has **Bookmark this WhatsApp message** as a fallback.
 - **Collections.** Pick an existing collection, type a new name, or leave it blank for **Unnamed**. Each bookmark can also carry one optional **Label** (a name or description).
-- **A bookmarks pane beside your chats.** Click the bookmark icon in WhatsApp's left navigation (or the extension's toolbar button). Filter collections by name, and filter by type: Text, Audio, Video, Files, Links, Images. Cards are a consistent size so the list is easy to scan.
+- **A bookmarks pane beside your chats.** Click the bookmark icon in WhatsApp's left navigation (or the extension's toolbar button). Filter collections by name, and filter by type: Text, Audio, Video, Files, Links, Contacts, Images. Cards are a consistent size so the list is easy to scan.
 - **A real viewer.** Click a card to open the full message in the right-hand pane:
   - text is selectable and copyable, and links open in a new tab;
   - voice notes and videos have full playback controls;
   - images open full size;
+  - shared contacts show the name and phone number(s) in a card, with a **Copy number** button;
   - files show their name, type and size with **Open** and **Download**, and PDFs / plain text also render inline.
 - **Move, relabel or remove** any bookmark from the card menu. Empty collections disappear automatically.
-- **Follows WhatsApp's light/dark theme**, including live theme changes.
+- **Matches WhatsApp.** The extension uses WhatsApp's own font and follows its light/dark theme, including live theme changes.
 
 ## Install
 
@@ -61,6 +62,7 @@ Requires Chrome 111 or newer.
 - Media is limited to 25 MB per attachment.
 - Voice notes and videos are captured by briefly (and silently) playing the selected message; playback is restored afterwards. Videos can take up to a minute to download and decrypt.
 - Files are captured by triggering WhatsApp's own download for that message; the extension reads the file instead of letting it reach your Downloads folder.
+- Shared contacts are saved as a name and phone number(s); the number is read from the contact card WhatsApp Web has already loaded. If a card exposes no number, only the name is saved.
 - View-once media is not supported. Full-resolution images may be unavailable, in which case a thumbnail is saved.
 - If an older bookmark has no media bytes, re-bookmark the original message or use **Add media** in the viewer (image, audio, video or document, up to 25 MB).
 
